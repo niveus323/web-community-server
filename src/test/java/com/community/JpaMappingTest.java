@@ -1,7 +1,7 @@
 package com.community;
 
 import com.community.web.domain.Board;
-import com.community.web.domain.BoardType;
+import com.community.web.domain.enums.BoardType;
 import com.community.web.domain.User;
 import com.community.web.repository.BoardRepository;
 import com.community.web.repository.UserRepository;
