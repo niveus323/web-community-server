@@ -34,9 +34,12 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         this.userRepository = userRepository;
     }
 
+    @Override
     public boolean supportsParameter(MethodParameter parameter){
         return parameter.getParameterAnnotation(SocialUser.class) != null && parameter.getParameterType().equals(User.class);
     }
+
+    @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpSession session = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession();
         User user = (User) session.getAttribute("user");
@@ -50,7 +53,9 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
                 Map<String,Object> map = authentication.getPrincipal().getAttributes();
                 User convertUser = convertUser(authentication.getAuthorizedClientRegistrationId(),map);
                 user = userRepository.findByEmail(convertUser.getEmail());
-                if(user==null) user = userRepository.save(convertUser);
+                if(user==null){
+                    user = userRepository.save(convertUser);
+                }
 
                 setRoleIfNotSame(user, authentication, map);
                 session.setAttribute("user",user);
@@ -62,8 +67,8 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private User convertUser(String authority, Map<String, Object> map){
-        if(GOOGLE.getValue().equals(authority)) return getModernUser(GOOGLE, map);
-        else if(KAKAO.getValue().equals(authority)) return getKakaoUser(map);
+        if(GOOGLE.isEquals(authority)) return getModernUser(GOOGLE, map);
+        else if(KAKAO.isEquals(authority)) return getKakaoUser(map);
         return null;
     }
 
@@ -73,7 +78,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private User getKakaoUser(Map<String, Object> map){
-        HashMap<String, String> propertyMap = (HashMap<String, String>) map.get("properties");
+        Map<String, String> propertyMap = (HashMap<String, String>) map.get("properties");
         return User.builder().name(propertyMap.get("nickname")).email(String.valueOf(map.get("kaccount_email"))).principal(String.valueOf(map.get("id")))
                 .socialType(KAKAO).createdDate(LocalDateTime.now()).build();
     }
