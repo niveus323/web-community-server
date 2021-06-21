@@ -1,10 +1,12 @@
 package com.community.web.config;
 
+import com.community.web.domain.event.BoardEventHandler;
 import com.community.web.oauth.CustomOAuth2Provider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -24,6 +26,7 @@ import static com.community.web.domain.enums.SocialType.GOOGLE;
 import static com.community.web.domain.enums.SocialType.KAKAO;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -64,5 +67,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .build();
         }
         return null;
+    }
+
+    @Bean
+    BoardEventHandler boardEventHandler(){
+        return new BoardEventHandler();
     }
 }

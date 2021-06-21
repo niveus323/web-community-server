@@ -28,7 +28,7 @@ import static com.community.web.domain.enums.SocialType.KAKAO;
 
 @Component
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserArgumentResolver(UserRepository userRepository){
         this.userRepository = userRepository;

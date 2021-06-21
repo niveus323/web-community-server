@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -34,6 +35,7 @@ public class CommunityApplication implements WebMvcConfigurer {
     }
 
     @Bean
+    @Transactional
     public CommandLineRunner runner(UserRepository userRepository, BoardRepository boardRepository) throws Exception{
         return (args -> {
             User user = userRepository.save(User.builder()

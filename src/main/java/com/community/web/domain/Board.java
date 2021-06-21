@@ -40,6 +40,14 @@ public class Board {
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
+    public void setUpdatedDateNow() {
+        this.updatedDate = LocalDateTime.now();
+    }
+
+    public void setCreatedDateNow() {
+        this.createdDate = LocalDateTime.now();
+    }
+
     @Builder
     public Board(String title, String subTitle, String content, BoardType boardType, LocalDateTime createdDate, LocalDateTime updatedDate, User user) {
         this.title = title;
