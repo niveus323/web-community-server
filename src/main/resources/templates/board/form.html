@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <title>Board Form</title>
+    <title>글쓰기</title>
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
 </head>
@@ -56,7 +56,7 @@
             </tr>
         </table>
         <div class="pull-left">
-            <a href="/board/list" class="btn btn-default">목록으로</a>
+            <a href="/" class="btn btn-default">목록으로</a>
         </div>
         <div class="pull-right">
             <button th:if="!${board?.idx}" type="button" class="btn btn-primary" id="insert">저장</button>
@@ -82,7 +82,7 @@
                 dataType: "json",
                 success: function (){
                     alert('저장 성공!');
-                    location.href = '/board/list';
+                    location.href = '/';
                 },
                 error : function(){
                     alert('저장 실패!');
@@ -107,7 +107,7 @@
                 dataType: "json",
                 success: function (){
                     alert('수정 성공!');
-                    location.href = '/board/list';
+                    location.href = '/';
                 },
                 error : function(){
                     alert('수정 실패!');
@@ -120,7 +120,7 @@
                 type:"DELETE",
                 success: function (){
                     alert('삭제 성공!');
-                    location.href = '/board/list';
+                    location.href = '/';
                 },
                 error : function(){
                     alert('삭제 실패!');

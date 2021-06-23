@@ -34,14 +34,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         http.oauth2Client();
-        http.authorizeRequests().antMatchers("/","/oauth2/**","/login/**","/css/**","/images/**","/js/**","/console/**").permitAll()
+        http.authorizeRequests().antMatchers("/","/board/","/oauth2/**","/login/**","/css/**","/images/**","/js/**","/console/**").permitAll()
                 .antMatchers("/google").hasAuthority(GOOGLE.getRoleType())
                 .antMatchers("/kakao").hasAuthority(KAKAO.getRoleType())
                 .anyRequest().authenticated()
                 .and().oauth2Login().defaultSuccessUrl("/loginSuccess").failureUrl("/loginFailure")
                 .and().headers().frameOptions().disable()
                 .and().exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-                .and().formLogin().successForwardUrl("/board/list")
+                .and().formLogin().successForwardUrl("/")
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("JSESSIONID").invalidateHttpSession(true)
                 .and().addFilterBefore(filter, CsrfFilter.class).csrf().disable();
     }

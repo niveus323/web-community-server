@@ -1,5 +1,8 @@
 package com.community.web.controller;
 
+import com.community.web.annotation.SocialUser;
+import com.community.web.domain.Board;
+import com.community.web.domain.User;
 import com.community.web.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -10,22 +13,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
-@RequestMapping("/board")
 public class BoardController {
     @Autowired
     BoardService boardService;
 
-    @GetMapping({"", "/"})
-    public String board(@RequestParam(value="idx",defaultValue="0") Long idx, Model model){
-        model.addAttribute("board",boardService.findBoardByIdx(idx));
-        return "/board/form";
+    @GetMapping({"/board","/board/"})
+    public String board(@RequestParam(value="idx",defaultValue="0") Long idx, Model model, @SocialUser User user){
+        Board board = boardService.findBoardByIdx(idx);
+        model.addAttribute("board", board);
+        if(board.getUser().equals(user))    model.addAttribute("authorized",true);
+        return "/board/detail";
     }
 
-    @GetMapping("/list")
+    @GetMapping("/")
     public String list(@PageableDefault Pageable pageable, Model model){
         model.addAttribute("boardList",boardService.findBoardList(pageable));
         return "/board/list";
     }
 
+    @GetMapping("/board/write")
+    public String write(@RequestParam(value="idx", required = false) Long idx, Model model, @SocialUser User user){
+        if(idx!=null){
+            Board board = boardService.findBoardByIdx(idx);
+            if(!board.getUser().equals(user)) return "/";
+            model.addAttribute("board", board);
+        }
+
+        return "/board/form";
+    }
 }

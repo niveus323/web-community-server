@@ -51,6 +51,7 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .boardType(BoardType.free)
                     .createdDate(LocalDateTime.now())
                     .updatedDate(LocalDateTime.now())
+                    .user(user)
                     .build()));
         });
     }

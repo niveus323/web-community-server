@@ -2,6 +2,7 @@ package com.community.web.domain;
 
 import com.community.web.domain.enums.SocialType;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
+@EqualsAndHashCode(of={"idx","email"})
 @NoArgsConstructor
 @Entity
 @Table
