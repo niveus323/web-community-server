@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title th:value="${board.content}"></title>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div th:replace="layout/header::header"></div>
+<div class="container">
+    <div class="page-header">
+        <h1>게시글</h1>
+    </div>
+    <br/>
+    <input id="board_idx" type="hidden" th:value="${board.idx}"/>
+    <table class="table">
+        <tr>
+            <th style="padding: 13px 0 0 15px">게시판 종류</th>
+            <td>
+                <div class="pull-left">
+                    <span th:if="${board.boardType?.name() == 'notice'}">공지사항</span>
+                    <span th:if="${board.boardType?.name() == 'free'}">자유게시판</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th style="padding:13px 0 0 15px;">생성 날짜</th>
+            <td><span class="" th:text="${board?.createdDate}"></span></td>
+        </tr>
+        <tr>
+            <th style="padding: 13px 0 0 15px;">제목</th>
+            <td><span id="board_title" class="" th:text="${board?.title}"></span></td>
+        </tr>
+        <tr>
+            <th style="padding: 13px 0 0 15px;">부제목</th>
+            <td><span id="board_sub_title" class="" th:text="${board?.subTitle}"></span></td>
+        </tr>
+        <tr>
+            <th style="padding: 13px 0 0 15px;" th:colspan="2">내용</th>
+        </tr>
+        <tr>
+            <td th:colspan="2">
+                <span id="board_content" class="" style="height: 200px;" th:text="${board?.content}"></span>
+                <span class="help-block"></span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <div class="pull-left">
+        <a href="/" class="btn btn-default">목록으로</a>
+    </div>
+    <div class="pull-right">
+        <button th:if="${authorized}" type="button" class="btn btn-info" id="update">수정</button>
+        <button th:if="${authorized}" type="button" class="btn btn-danger" id="delete">삭제</button>
+    </div>
+</div>
+<div th:replace="layout/footer::footer"></div>
+</body>
+</html>
