@@ -34,10 +34,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         http.oauth2Client();
-        http.authorizeRequests().antMatchers("/","/board/","/oauth2/**","/login/**","/css/**","/images/**","/js/**","/console/**").permitAll()
+        http.authorizeRequests()
                 .antMatchers("/google").hasAuthority(GOOGLE.getRoleType())
                 .antMatchers("/kakao").hasAuthority(KAKAO.getRoleType())
-                .anyRequest().authenticated()
+                .antMatchers("/board/write","api/**").authenticated()
+                .anyRequest().permitAll()
                 .and().oauth2Login().defaultSuccessUrl("/loginSuccess").failureUrl("/loginFailure")
                 .and().headers().frameOptions().disable()
                 .and().exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))

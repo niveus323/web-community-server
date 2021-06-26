@@ -20,7 +20,7 @@ public class BoardController {
     @Autowired
     BoardService boardService;
 
-    @GetMapping({"/board","/board/"})
+    @GetMapping({"/board"})
     public String board(@RequestParam(value="idx",defaultValue="0") Long idx, Model model, @SocialUser User user){
         Board board = boardService.findBoardByIdx(idx);
         model.addAttribute("board", board);
@@ -38,10 +38,9 @@ public class BoardController {
     public String write(@RequestParam(value="idx", required = false) Long idx, Model model, @SocialUser User user){
         if(idx!=null){
             Board board = boardService.findBoardByIdx(idx);
-            if(!board.getUser().equals(user)) return "/";
+            if(!board.getUser().equals(user)) return "redirect:/";
             model.addAttribute("board", board);
         }
-
         return "/board/form";
     }
 }

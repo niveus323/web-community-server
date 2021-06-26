@@ -79,7 +79,8 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private User getKakaoUser(Map<String, Object> map){
         Map<String, String> propertyMap = (HashMap<String, String>) map.get("properties");
-        return User.builder().name(propertyMap.get("nickname")).email(String.valueOf(map.get("kaccount_email"))).principal(String.valueOf(map.get("id")))
+        Map<String, String> accountMap = (HashMap<String, String>) map.get("kakao_account");
+        return User.builder().name(propertyMap.get("nickname")).email(String.valueOf(accountMap.get("email"))).principal(String.valueOf(map.get("id")))
                 .socialType(KAKAO).createdDate(LocalDateTime.now()).build();
     }
 
