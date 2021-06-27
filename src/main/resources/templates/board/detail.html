@@ -59,5 +59,24 @@
     </div>
 </div>
 <div th:replace="layout/footer::footer"></div>
+<script th:src="@{//code.jquery.com/jquery-3.3.1.min.js}"></script>
+<script th:if="${authorized}">
+    $('#update').click(function(){
+        location.href = '/board/write?idx='+$('#board_idx').val();
+    });
+    $('#delete').click(function(){
+        $.ajax({
+            url: "http://localhost:8080/api/boards/"+$('#board_idx').val(),
+            type:"DELETE",
+            success: function (){
+                alert('삭제 성공!');
+                location.href = '/';
+            },
+            error : function(){
+                alert('삭제 실패!');
+            }
+        });
+    });
+</script>
 </body>
 </html>

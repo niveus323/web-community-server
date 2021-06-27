@@ -29,13 +29,6 @@
                 </td>
             </tr>
             <tr>
-                <th style="padding:13px 0 0 15px;">생성 날짜</th>
-                <td><input type="text" class="col-md-1 form-control input-sm"
-                           readonly="readonly" th:value="${board?.createdDate} ?
-                            ${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')} :
-                             ${board?.createdDate}"/></td>
-            </tr>
-            <tr>
                 <th style="padding: 13px 0 0 15px;">제목</th>
                 <td><input id="board_title" type="text" class="col-md-1 form-control input-sm" th:value="${board?.title}"/></td>
             </tr>
@@ -61,14 +54,13 @@
         <div class="pull-right">
             <button th:if="!${board?.idx}" type="button" class="btn btn-primary" id="insert">저장</button>
             <button th:if="${board?.idx}" type="button" class="btn btn-info" id="update">수정</button>
-            <button th:if="${board?.idx}" type="button" class="btn btn-danger" id="delete">삭제</button>
         </div>
     </div>
     <div th:replace="layout/footer::footer"></div>
     <script th:src="@{//code.jquery.com/jquery-3.3.1.min.js}"></script>
     <script th:if="!${board?.idx}">
         $('#insert').click(function(){
-            var jsonData = JSON.stringify({
+            let jsonData = JSON.stringify({
                 title:$('#board_title').val(),
                 subTitle: $('#board_sub_title').val(),
                 content: $('#board_content').val(),
@@ -92,12 +84,12 @@
     </script>
     <script th:if="${board?.idx}">
         $('#update').click(function(){
-            var jsonData = JSON.stringify({
+            let jsonData = JSON.stringify({
+                id:$('#board_idx').val(),
                 title:$('#board_title').val(),
                 subTitle: $('#board_sub_title').val(),
                 content: $('#board_content').val(),
-                boardType: $('#board_type option:selected').val(),
-                createdDate: $('#board_create_date').val()
+                boardType: $('#board_type option:selected').val()
             });
             $.ajax({
                 url: "http://localhost:8080/api/boards/"+$('#board_idx').val(),
@@ -111,19 +103,6 @@
                 },
                 error : function(){
                     alert('수정 실패!');
-                }
-            });
-        });
-        $('#delete').click(function(){
-            $.ajax({
-                url: "http://localhost:8080/api/boards/"+$('#board_idx').val(),
-                type:"DELETE",
-                success: function (){
-                    alert('삭제 성공!');
-                    location.href = '/';
-                },
-                error : function(){
-                    alert('삭제 실패!');
                 }
             });
         });

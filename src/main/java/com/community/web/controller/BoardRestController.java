@@ -1,6 +1,5 @@
 package com.community.web.controller;
 
-import com.community.web.annotation.SocialUser;
 import com.community.web.domain.Board;
 import com.community.web.domain.User;
 import com.community.web.domain.enums.BoardType;
@@ -12,13 +11,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -26,7 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RepositoryRestController
 public class BoardRestController {
-    private BoardRepository boardRepository;
+    private final BoardRepository boardRepository;
 
     public BoardRestController(BoardRepository boardRepository){
         this.boardRepository = boardRepository;
@@ -51,11 +46,19 @@ public class BoardRestController {
                 .content(param.get("content").toString())
                 .title(param.get("title").toString())
                 .subTitle(param.get("subTitle").toString())
-                .createdDate(LocalDateTime.now())
-                .updatedDate(LocalDateTime.now())
                 .build();
-        boardRepository.save(board);
-        return ResponseEntity.ok(board);
+        return ResponseEntity.ok(boardRepository.save(board));
     }
 
+    @PutMapping(value="/boards", produces = "application/json; charset=utf8")
+    public @ResponseBody
+    ResponseEntity<?> updateBoard(@RequestBody Map<String, Object> param){
+        Board board = boardRepository.findById((Long)param.get("id")).get();
+        return ResponseEntity.ok(
+                board.update(
+                    param.get("title").toString(),
+                    param.get("subTitle").toString(),
+                    param.get("content").toString(),
+                    BoardType.valueOf(param.get("boardType").toString())));
+    }
 }
