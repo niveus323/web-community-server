@@ -4,21 +4,14 @@ import com.community.web.domain.enums.BoardType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Table
-public class Board {
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
-
+public class Board extends BaseEntity{
     @Column
     private String title;
 
@@ -32,31 +25,23 @@ public class Board {
     @Enumerated(EnumType.STRING)
     private BoardType boardType;
 
-    @Column
-    private LocalDateTime createdDate;
-
-    @Column
-    private LocalDateTime updatedDate;
-
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
-    public void setUpdatedDateNow() {
-        this.updatedDate = LocalDateTime.now();
-    }
-
-    public void setCreatedDateNow() {
-        this.createdDate = LocalDateTime.now();
-    }
-
     @Builder
-    public Board(String title, String subTitle, String content, BoardType boardType, LocalDateTime createdDate, LocalDateTime updatedDate, User user) {
+    public Board(String title, String subTitle, String content, BoardType boardType, User user) {
         this.title = title;
         this.subTitle = subTitle;
         this.content = content;
         this.boardType = boardType;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
         this.user = user;
+    }
+
+    public Board update(String title, String subTitle, String content, BoardType boardType){
+        this.title = title;
+        this.subTitle = subTitle;
+        this.content = content;
+        this.boardType = boardType;
+        return this;
     }
 }

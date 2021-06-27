@@ -11,16 +11,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-@EqualsAndHashCode(of={"idx","email"})
+@EqualsAndHashCode(callSuper = true, of={"email"})
 @NoArgsConstructor
 @Entity
 @Table
-public class User implements Serializable {
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
-
+public class User extends BaseEntity implements Serializable {
     @Column
     private String name;
 
@@ -36,20 +31,12 @@ public class User implements Serializable {
     @Column
     private SocialType socialType;
 
-    @Column
-    private LocalDateTime createdDate;
-
-    @Column
-    private LocalDateTime updatedDate;
-
     @Builder
-    public User(String name, String password, String email, String principal, SocialType socialType ,LocalDateTime createdDate, LocalDateTime updatedDate) {
+    public User(String name, String password, String email, String principal, SocialType socialType) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.principal = principal;
         this.socialType = socialType;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
     }
 }

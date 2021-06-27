@@ -19,7 +19,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,14 +73,14 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private User getModernUser(SocialType socialType, Map<String, Object> map){
         return User.builder().name(String.valueOf(map.get("name"))).email(String.valueOf(map.get("email"))).principal(String.valueOf(map.get("id")))
-                .socialType(socialType).createdDate(LocalDateTime.now()).build();
+                .socialType(socialType).build();
     }
 
     private User getKakaoUser(Map<String, Object> map){
         Map<String, String> propertyMap = (HashMap<String, String>) map.get("properties");
         Map<String, String> accountMap = (HashMap<String, String>) map.get("kakao_account");
         return User.builder().name(propertyMap.get("nickname")).email(String.valueOf(accountMap.get("email"))).principal(String.valueOf(map.get("id")))
-                .socialType(KAKAO).createdDate(LocalDateTime.now()).build();
+                .socialType(KAKAO).build();
     }
 
     private void setRoleIfNotSame(User user, OAuth2AuthenticationToken authentication, Map<String, Object> map){
