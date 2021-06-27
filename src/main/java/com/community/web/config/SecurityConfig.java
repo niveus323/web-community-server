@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/google").hasAuthority(GOOGLE.getRoleType())
                 .antMatchers("/kakao").hasAuthority(KAKAO.getRoleType())
-                .antMatchers("/board/write","api/**").authenticated()
+                .antMatchers("/board/write","/api/**").authenticated()
                 .anyRequest().permitAll()
                 .and().oauth2Login().defaultSuccessUrl("/loginSuccess").failureUrl("/loginFailure")
                 .and().headers().frameOptions().disable()
