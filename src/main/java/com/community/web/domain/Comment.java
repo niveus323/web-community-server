@@ -1,5 +1,6 @@
 package com.community.web.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,20 +13,20 @@ import javax.persistence.*;
 @Table
 public class Comment extends BaseEntity{
     @Column
-    private String context;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name="BOARD_ID")
     private Board board;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="USER_ID")
     private User user;
 
     @Builder
-    public Comment(String context, Board board, User user) {
+    public Comment(String content, Board board, User user) {
         this.board = board;
-        this.context = context;
+        this.content = content;
         this.user = user;
     }
 }

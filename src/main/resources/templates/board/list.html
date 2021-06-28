@@ -20,20 +20,20 @@
         <div id="mainHide">
             <table class="table table-hover">
                 <thead>
-                <tr>
-                    <th class="col-md-1">#</th>
-                    <th class="col-md-2">서비스 분류</th>
-                    <th class="col-md-3">제목</th>
-                    <th class="col-md-4">작성 날짜</th>
-                    <th class="col-md-5">수정 날짜</th>
-                </tr>
+                    <tr>
+                        <th class="col-md-1">#</th>
+                        <th class="col-md-2">서비스 분류</th>
+                        <th class="col-md-3">제목</th>
+                        <th class="col-md-4">작성자</th>
+                        <th class="col-md-5">수정 날짜</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr th:each="board : ${boardList}">
                         <td th:text="${board.idx}"></td>
                         <td th:text="${board.boardType.value}"></td>
-                        <td><a th:href="'/board?idx='+${board.idx}"th:text="${board.title}"></a></td>
-                        <td th:text="${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')}"></td>
+                        <td><a th:href="'/board?idx='+${board.idx}" th:text="${board.title}"></a></td>
+                        <td th:text="${board.user.name}"></td>
                         <td th:text="${#temporals.format(board.updatedDate,'yyyy-MM-dd HH:mm')}"></td>
                     </tr>
                 </tbody>

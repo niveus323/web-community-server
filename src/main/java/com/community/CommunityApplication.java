@@ -61,7 +61,7 @@ public class CommunityApplication implements WebMvcConfigurer {
             IntStream.rangeClosed(1,10).forEach(index -> commentRepository.save(Comment.builder()
                     .board(board)
                     .user(user)
-                    .context("댓글"+index)
+                    .content("댓글"+index)
                     .build()));
         });
     }

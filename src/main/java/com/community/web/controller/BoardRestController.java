@@ -1,9 +1,12 @@
 package com.community.web.controller;
 
 import com.community.web.domain.Board;
+import com.community.web.domain.Comment;
 import com.community.web.domain.User;
 import com.community.web.domain.enums.BoardType;
 import com.community.web.repository.BoardRepository;
+import com.community.web.repository.CommentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -22,9 +25,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RepositoryRestController
 public class BoardRestController {
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
-    public BoardRestController(BoardRepository boardRepository){
+    @Autowired
+    public BoardRestController(BoardRepository boardRepository, CommentRepository commentRepository){
         this.boardRepository = boardRepository;
+        this.commentRepository = commentRepository;
     }
 
     @GetMapping("/boards")
@@ -62,4 +68,16 @@ public class BoardRestController {
                     BoardType.valueOf(param.get("boardType").toString())));
     }
 
+    @PostMapping(value="/comments/{board_id}", produces = "application/json; charset=utf8")
+    public @ResponseBody
+    ResponseEntity<?> saveComment(@PathVariable("board_id") Long idx,@RequestBody Map<String, Object> param, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        Board board = boardRepository.findById(idx).get();
+        Comment comment = Comment.builder()
+                .user(user)
+                .board(board)
+                .content(param.get("content").toString())
+                .build();
+        return ResponseEntity.ok(commentRepository.save(comment));
+    }
 }

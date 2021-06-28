@@ -45,7 +45,6 @@ public class JpaMappingTest {
     public void shouldHaveOneBoard(){
         User user = userRepository.findByEmail(email);
         Assertions.assertEquals(user.getName(),"이름");
-        Assertions.assertEquals(user.getPassword(),"test");
         Assertions.assertEquals(user.getEmail(),email);
         Assertions.assertEquals(user.getCreatedDate(), LocalDateTime.now());
 

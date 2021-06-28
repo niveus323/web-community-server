@@ -57,9 +57,40 @@
         <button th:if="${authorized}" type="button" class="btn btn-info" id="update">수정</button>
         <button th:if="${authorized}" type="button" class="btn btn-danger" id="delete">삭제</button>
     </div>
+    <div class="clearfix"></div>
+    <div class="comment-area">
+        <div class="comment-area-header">
+            <h5>
+                댓글 <span id="total_comment_count" th:text="${commentList.totalElements}"></span>개 &nbsp;
+            </h5>
+        </div>
+        <div class="comment-real-area">
+            <div class="comment" th:each="comment : ${commentList}" th:id="'comment-'+${comment.idx}" th:data-id="${comment.idx}">
+                <div class="comment-header">
+                    <div class="comment-writer" th:text="${comment.user.name}"></div>
+                    <div class="comment-menu">
+                        <span class="time" th:title="${comment.updatedDate}" th:text="${comment.updatedDate}"></span>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="comment-content">
+                    <span th:text="${comment.content}"></span>
+                </div>
+            </div>
+        </div>
+        <div id="comment-write-form-area">
+            <textarea name="content" id="comment-content" rows="4" class="form-control" placeholder="내용을 입력해주세요." style="height: 150px"></textarea>
+            <div id="comment-write-button-area">
+                <button class="btn btn-primary pull-right btn-sm" type="submit" id="comment-post"><span class="glyphicon glyphicon-pencil"></span>댓글쓰기</button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 <div th:replace="layout/footer::footer"></div>
-<script th:src="@{//code.jquery.com/jquery-3.3.1.min.js}"></script>
+<script th:src="@{http://code.jquery.com/jquery-3.3.1.min.js}"></script>
 <script th:if="${authorized}">
     $('#update').click(function(){
         location.href = '/board/write?idx='+$('#board_idx').val();
@@ -76,6 +107,27 @@
                 alert('삭제 실패!');
             }
         });
+    });
+</script>
+<script>
+    $('#comment-post').click(function(){
+        let jsonData = JSON.stringify({
+            content : $('#comment-content').val()
+        });
+       $.ajax({
+           url: "http://localhost:8080/api/comments/"+$('#board_idx').val(),
+           type: "POST",
+           data: jsonData,
+           contentType: "application/json",
+           dataType: "json",
+           success : function (){
+               alert('댓글 등록 성공!');
+               location.reload();
+           },
+           error : function (){
+               alert('댓글 등록 실패!');
+           }
+       })
     });
 </script>
 </body>

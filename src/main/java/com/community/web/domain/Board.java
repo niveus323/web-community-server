@@ -25,7 +25,7 @@ public class Board extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private BoardType boardType;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private User user;
 
     @Builder

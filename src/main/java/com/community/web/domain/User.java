@@ -1,6 +1,7 @@
 package com.community.web.domain;
 
 import com.community.web.domain.enums.SocialType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,18 +9,18 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-@Getter
 @EqualsAndHashCode(callSuper = true, of={"email"})
 @NoArgsConstructor
 @Entity
 @Table
+@Getter
 public class User extends BaseEntity implements Serializable {
     @Column
     private String name;
 
     @Column
+    @JsonIgnore
     private String password;
 
     @Column
