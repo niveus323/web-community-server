@@ -61,4 +61,5 @@ public class BoardRestController {
                     param.get("content").toString(),
                     BoardType.valueOf(param.get("boardType").toString())));
     }
+
 }

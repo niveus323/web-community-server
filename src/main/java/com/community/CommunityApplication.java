@@ -1,9 +1,11 @@
 package com.community;
 
 import com.community.web.domain.Board;
+import com.community.web.domain.Comment;
 import com.community.web.domain.enums.BoardType;
 import com.community.web.domain.User;
 import com.community.web.repository.BoardRepository;
+import com.community.web.repository.CommentRepository;
 import com.community.web.repository.UserRepository;
 import com.community.web.resolver.UserArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,7 @@ public class CommunityApplication implements WebMvcConfigurer {
 
     @Bean
     @Transactional
-    public CommandLineRunner runner(UserRepository userRepository, BoardRepository boardRepository) throws Exception{
+    public CommandLineRunner runner(UserRepository userRepository, BoardRepository boardRepository, CommentRepository commentRepository) throws Exception{
         return (args -> {
             User user = userRepository.save(User.builder()
                     .name("이름")
@@ -54,6 +56,12 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .content("콘텐츠")
                     .boardType(BoardType.free)
                     .user(user)
+                    .build()));
+            Board board = boardRepository.findById(1L).get();
+            IntStream.rangeClosed(1,10).forEach(index -> commentRepository.save(Comment.builder()
+                    .board(board)
+                    .user(user)
+                    .context("댓글"+index)
                     .build()));
         });
     }

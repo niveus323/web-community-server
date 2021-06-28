@@ -5,42 +5,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
 @Entity
 @Table
-public class Comment {
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
-
+public class Comment extends BaseEntity{
     @Column
     private String context;
 
-    @Column
     @ManyToOne
     @JoinColumn(name="BOARD_ID")
     private Board board;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="USER_ID")
     private User user;
 
-    @Column
-    private LocalDateTime createdDate;
-
-    @Column
-    private LocalDateTime updatedDate;
-
     @Builder
-    public Comment(Long idx, String context, Board board, User user, LocalDateTime createdDate, LocalDateTime updatedDate) {
-        this.idx = idx;
+    public Comment(String context, Board board, User user) {
         this.board = board;
         this.context = context;
         this.user = user;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
     }
 }

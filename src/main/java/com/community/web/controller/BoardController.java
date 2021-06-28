@@ -4,6 +4,7 @@ import com.community.web.annotation.SocialUser;
 import com.community.web.domain.Board;
 import com.community.web.domain.User;
 import com.community.web.service.BoardService;
+import com.community.web.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -17,14 +18,22 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class BoardController {
+
+    final BoardService boardService;
+    final CommentService commentService;
+
     @Autowired
-    BoardService boardService;
+    public BoardController(BoardService boardService, CommentService commentService) {
+        this.boardService = boardService;
+        this.commentService = commentService;
+    }
 
     @GetMapping({"/board"})
-    public String board(@RequestParam(value="idx",defaultValue="0") Long idx, Model model, @SocialUser User user){
+    public String board(@RequestParam(value="idx",defaultValue="0") Long idx, Model model, @SocialUser User user, @PageableDefault Pageable pageable){
         Board board = boardService.findBoardByIdx(idx);
         model.addAttribute("board", board);
         if(board.getUser().equals(user))    model.addAttribute("authorized",true);
+        model.addAttribute("commentList",commentService.findCommentList(board,pageable));
         return "/board/detail";
     }
 
