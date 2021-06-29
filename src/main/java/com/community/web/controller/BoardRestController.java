@@ -54,10 +54,5 @@ public class BoardRestController {
         return ResponseEntity.ok(commentService.save(commentRequestDto, boardService.findEntityByIdx(idx),userService.toEntity(userDto)));
     }
 
-//    @PutMapping(value="/comments/{comment_id}", produces = "application/json; charset=utf8")
-//    public @ResponseBody
-//    ResponseEntity<?> updateComment(@PathVariable("comment_id")Long idx, @RequestBody CommentRequestDto commentRequestDto){
-//        return ResponseEntity.ok();
-//    }
 
 }

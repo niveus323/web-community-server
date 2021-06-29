@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>댓글 수정하기</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div th:replace="layout/header::header"></div>
+<div class="container">
+    <div class="frame" style="padding: 1em;">
+        <input id="board_idx" type="hidden" th:value="${board_idx}">
+        <input id="comment_idx" type="hidden" th:value="${comment?.idx}"/>
+        <textarea id="comment_content" class="col-md-1 form-control input-sm" maxlength="140" rows="7" style="height: 200px;" th:text="${comment?.content}"></textarea>
+        <span class="help-block"></span>
+        <div class="clearfix" style="margin-top: 1em;">
+            <div class="pull-left">
+                <a href="javascript:history.back();" class="btn btn-default"><i class="fa fa-reply"></i>돌아가기</a>
+            </div>
+            <div class="pull-right">
+                <button type="button" class="btn btn-primary" id="update"><i class="fa fa-pencil"></i>수정하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="layout/footer::footer"></div>
+<script th:src="@{//code.jquery.com/jquery-3.3.1.min.js}"></script>
+<script>
+    $('#update').click(function(){
+        let jsonData = JSON.stringify({
+            content: $('#comment_content').val()
+        });
+        $.ajax({
+            url: "http://localhost:8080/api/comments/"+$('#comment_idx').val(),
+            type:"PUT",
+            data: jsonData,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (){
+                history.back();
+            },
+            error : function(){
+                alert('수정 실패!');
+            }
+        });
+    });
+</script>
+</body>
+</html>

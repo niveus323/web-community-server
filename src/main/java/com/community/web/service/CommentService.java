@@ -33,4 +33,8 @@ public class CommentService {
                 .user(user)
                 .build()));
     }
+
+    public CommentResponseDto findCommentByIdx(Long idx){
+        return new CommentResponseDto(commentRepository.findById(idx).get());
+    }
 }
