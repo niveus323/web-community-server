@@ -14,7 +14,7 @@
         </div>
         <br/>
         <input id="board_idx" type="hidden" th:value="${board?.idx}"/>
-        <input id="board_create_date" type="hidden" th:value="${board?.createdDate}"/>
+<!--        <input id="board_create_date" type="hidden" th:value="${board?.updatedDate}"/>-->
         <table class="table">
             <tr>
                 <th style="padding: 13px 0 0 15px">게시판 선택</th>
@@ -22,8 +22,8 @@
                     <div class="pull-left">
                         <select class="form-control input-sm" id="board_type">
                             <option>-분류-</option>
-                            <option th:value="notice" th:selected="${board?.boardType?.name() == 'notice'}">공지사항</option>
-                            <option th:value="free" th:selected="${board?.boardType?.name() == 'free'}">자유게시판</option>
+                            <option th:value="notice" th:selected="${board?.boardType == '공지사항'}">공지사항</option>
+                            <option th:value="free" th:selected="${board?.boardType == '자유게시판'}">자유게시판</option>
                         </select>
                     </div>
                 </td>
@@ -73,7 +73,6 @@
                 contentType: "application/json",
                 dataType: "json",
                 success: function (){
-                    alert('저장 성공!');
                     location.href = '/';
                 },
                 error : function(){
@@ -85,7 +84,6 @@
     <script th:if="${board?.idx}">
         $('#update').click(function(){
             let jsonData = JSON.stringify({
-                id:$('#board_idx').val(),
                 title:$('#board_title').val(),
                 subTitle: $('#board_sub_title').val(),
                 content: $('#board_content').val(),
@@ -98,7 +96,6 @@
                 contentType: "application/json",
                 dataType: "json",
                 success: function (){
-                    alert('수정 성공!');
                     location.href = '/';
                 },
                 error : function(){

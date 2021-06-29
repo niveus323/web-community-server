@@ -19,14 +19,13 @@
             <th style="padding: 13px 0 0 15px">게시판 종류</th>
             <td>
                 <div class="pull-left">
-                    <span th:if="${board.boardType?.name() == 'notice'}">공지사항</span>
-                    <span th:if="${board.boardType?.name() == 'free'}">자유게시판</span>
+                    <span th:text="${board.boardType}"></span>
                 </div>
             </td>
         </tr>
         <tr>
-            <th style="padding:13px 0 0 15px;">생성 날짜</th>
-            <td><span class="" th:text="${board?.createdDate}"></span></td>
+            <th style="padding:13px 0 0 15px;">시간</th>
+            <td><span class="" th:text="${board?.updatedDate}"></span></td>
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;">제목</th>
@@ -53,9 +52,9 @@
     <div class="pull-left">
         <a href="/" class="btn btn-default">목록으로</a>
     </div>
-    <div class="pull-right">
-        <button th:if="${authorized}" type="button" class="btn btn-info" id="update">수정</button>
-        <button th:if="${authorized}" type="button" class="btn btn-danger" id="delete">삭제</button>
+    <div class="pull-right" th:if="${session.user?.idx == board.user.idx}">
+        <button type="button" class="btn btn-info" id="update">수정</button>
+        <button type="button" class="btn btn-danger" id="delete">삭제</button>
     </div>
     <div class="clearfix"></div>
     <div class="comment-area">
@@ -91,7 +90,7 @@
 </div>
 <div th:replace="layout/footer::footer"></div>
 <script th:src="@{http://code.jquery.com/jquery-3.3.1.min.js}"></script>
-<script th:if="${authorized}">
+<script th:if="${session.user?.idx == board.user.idx}">
     $('#update').click(function(){
         location.href = '/board/write?idx='+$('#board_idx').val();
     });
@@ -100,7 +99,6 @@
             url: "http://localhost:8080/api/boards/"+$('#board_idx').val(),
             type:"DELETE",
             success: function (){
-                alert('삭제 성공!');
                 location.href = '/';
             },
             error : function(){
@@ -121,7 +119,6 @@
            contentType: "application/json",
            dataType: "json",
            success : function (){
-               alert('댓글 등록 성공!');
                location.reload();
            },
            error : function (){

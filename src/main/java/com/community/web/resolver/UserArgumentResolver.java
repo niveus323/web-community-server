@@ -3,6 +3,7 @@ package com.community.web.resolver;
 import com.community.web.annotation.SocialUser;
 import com.community.web.domain.User;
 import com.community.web.domain.enums.SocialType;
+import com.community.web.dto.UserDto;
 import com.community.web.repository.UserRepository;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,34 +36,34 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter){
-        return parameter.getParameterAnnotation(SocialUser.class) != null && parameter.getParameterType().equals(User.class);
+        return parameter.getParameterAnnotation(SocialUser.class) != null && parameter.getParameterType().equals(UserDto.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpSession session = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession();
-        User user = (User) session.getAttribute("user");
-        return getUser(user, session);
+        UserDto userDto = (UserDto) session.getAttribute("user");
+        return getUser(userDto, session);
     }
 
-    private User getUser(User user, HttpSession session){
-        if(user==null){
+    private UserDto getUser(UserDto userDto, HttpSession session){
+        if(userDto==null){
             try {
                 OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
                 Map<String,Object> map = authentication.getPrincipal().getAttributes();
                 User convertUser = convertUser(authentication.getAuthorizedClientRegistrationId(),map);
-                user = userRepository.findByEmail(convertUser.getEmail());
+                User user = userRepository.findByEmail(convertUser.getEmail());
                 if(user==null){
                     user = userRepository.save(convertUser);
                 }
-
+                userDto = new UserDto(user);
                 setRoleIfNotSame(user, authentication, map);
-                session.setAttribute("user",user);
+                session.setAttribute("user",userDto);
             } catch (ClassCastException e){
-                return user;
+                return userDto;
             }
         }
-        return user;
+        return userDto;
     }
 
     private User convertUser(String authority, Map<String, Object> map){

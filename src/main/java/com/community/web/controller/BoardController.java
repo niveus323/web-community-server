@@ -1,8 +1,8 @@
 package com.community.web.controller;
 
 import com.community.web.annotation.SocialUser;
-import com.community.web.domain.Board;
-import com.community.web.domain.User;
+import com.community.web.dto.response.BoardResponseDto;
+import com.community.web.dto.UserDto;
 import com.community.web.service.BoardService;
 import com.community.web.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpSession;
 
 @Controller
 public class BoardController {
@@ -29,11 +26,10 @@ public class BoardController {
     }
 
     @GetMapping({"/board"})
-    public String board(@RequestParam(value="idx",defaultValue="0") Long idx, Model model, @SocialUser User user, @PageableDefault Pageable pageable){
-        Board board = boardService.findBoardByIdx(idx);
-        model.addAttribute("board", board);
-        if(board.getUser().equals(user))    model.addAttribute("authorized",true);
-        model.addAttribute("commentList",commentService.findCommentList(board,pageable));
+    public String board(@RequestParam(value="idx",defaultValue="0") Long idx, Model model, @PageableDefault Pageable pageable){
+        BoardResponseDto boardResponseDto = boardService.findBoardByIdx(idx);
+        model.addAttribute("board", boardResponseDto);
+        model.addAttribute("commentList",commentService.findCommentList(boardService.findEntityByIdx(idx),pageable));
         return "/board/detail";
     }
 
@@ -44,10 +40,10 @@ public class BoardController {
     }
 
     @GetMapping("/board/write")
-    public String write(@RequestParam(value="idx", required = false) Long idx, Model model, @SocialUser User user){
+    public String write(@RequestParam(value="idx", required = false) Long idx, Model model, @SocialUser UserDto userDto){
         if(idx!=null){
-            Board board = boardService.findBoardByIdx(idx);
-            if(!board.getUser().equals(user)) return "redirect:/";
+            BoardResponseDto board = boardService.findBoardByIdx(idx);
+            if(!board.getUser().equals(userDto)) return "redirect:/";
             model.addAttribute("board", board);
         }
         return "/board/form";

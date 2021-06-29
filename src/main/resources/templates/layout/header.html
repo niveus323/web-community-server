@@ -20,7 +20,8 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="/logout">LOGOUT</a>
+                        <a th:if="!${session.user}" href="/login">LOGIN</a>
+                        <a th:if="${session.user}" href="/logout">LOGOUT</a>
                     </li>
                 </ul>
             </div>
