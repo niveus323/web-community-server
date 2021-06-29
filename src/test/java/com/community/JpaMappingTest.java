@@ -35,7 +35,6 @@ public class JpaMappingTest {
                 .email(email).build());
         boardRepository.save(Board.builder()
                 .title(boardTestTitle)
-                .subTitle("서브 타이틀")
                 .content("콘텐츠")
                 .boardType(BoardType.free)
                 .user(user).build());
@@ -50,7 +49,6 @@ public class JpaMappingTest {
 
         Board board = boardRepository.findByUser(user);
         Assertions.assertEquals(board.getTitle(),boardTestTitle);
-        Assertions.assertEquals(board.getSubTitle(),"서브 타이틀");
         Assertions.assertEquals(board.getContent(),"콘텐츠");
         Assertions.assertEquals(board.getBoardType(),BoardType.free);
         Assertions.assertEquals(board.getUpdatedDate(), LocalDateTime.now());

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BoardRequestDto {
     private String title;
-    private String subTitle;
     private String content;
     private String boardType;
 }

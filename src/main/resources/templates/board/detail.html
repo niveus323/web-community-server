@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title th:value="${board.content}"></title>
@@ -29,11 +29,11 @@
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;">제목</th>
-            <td><span id="board_title" class="" th:text="${board?.title}"></span></td>
+            <td><span id="board_title" class="" th:text="${board?.title}"></span><small class="code" th:if="${board?.createdDate!=board?.updatedDate}">(수정됨)</small></td>
         </tr>
         <tr>
-            <th style="padding: 13px 0 0 15px;">부제목</th>
-            <td><span id="board_sub_title" class="" th:text="${board?.subTitle}"></span></td>
+            <th style="padding: 13px 0 0 15px;">작성자</th>
+            <td><span id="board_sub_title" class="" th:text="${board?.user?.name}"></span></td>
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;" th:colspan="2">내용</th>
@@ -67,8 +67,16 @@
             <div class="comment" th:each="comment : ${commentList}" th:id="'comment-'+${comment.idx}" th:data-id="${comment.idx}">
                 <div class="comment-header">
                     <div class="comment-writer" th:text="${comment.user.name}"></div>
+                    <small class="code" th:if="${comment.user.idx==board.user.idx}">(글쓴이) </small>
+                    <small class="code" th:if="${comment.createdDate!=comment.updatedDate}">(수정됨) </small>
                     <div class="comment-menu">
-                        <span class="time" th:title="${comment.updatedDate}" th:text="${comment.updatedDate}"></span>
+                        <div th:if="${session.user?.idx == comment.user.idx}">
+                            <a th:href="'/board/comment_edit/'+${comment.idx}">수정</a>
+                            <span class="middot">·</span>
+                            <a th:onclick="'deleteComment('+${comment.idx}+')'">삭제</a>
+                            <span class="middot">·</span>
+                        </div>
+                        <span class="time" th:title="${comment.createdDate}" th:text="${comment.createdDate}"></span>
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -85,8 +93,6 @@
             </div>
         </div>
     </div>
-
-
 </div>
 <div th:replace="layout/footer::footer"></div>
 <script th:src="@{http://code.jquery.com/jquery-3.3.1.min.js}"></script>
@@ -106,6 +112,22 @@
             }
         });
     });
+</script>
+<script th:if="${commentList}">
+    function deleteComment(idx) {
+        if(confirm("댓글을 삭제하시겠습니까?")){
+            $.ajax({
+                url: "http://localhost:8080/api/comments/"+idx,
+                type: "DELETE",
+                success: function (){
+                    location.reload()
+                },
+                error : function (){
+                    alert('댓글 삭제 실패!');
+                }
+            });
+        }
+    }
 </script>
 <script>
     $('#comment-post').click(function(){

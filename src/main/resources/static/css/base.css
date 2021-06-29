@@ -59,3 +59,15 @@ body > .container{
 #comment-write-form #comment-write-button-area{
     margin-top: .5em;
 }
+.comment > .comment-header > small.code{
+    font-size: 12px;
+    float: left;
+    padding-top: 8px;
+}
+small.code{
+    padding-left: 6px;
+    color: #aaa;
+}
+.comment > .comment-header > span.middot{
+    margin: 0 5px;
+}

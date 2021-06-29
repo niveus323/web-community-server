@@ -18,9 +18,6 @@ public class Board extends BaseEntity{
     private String title;
 
     @Column
-    private String subTitle;
-
-    @Column
     private String content;
 
     @Column
@@ -31,17 +28,15 @@ public class Board extends BaseEntity{
     private User user;
 
     @Builder
-    public Board(String title, String subTitle, String content, BoardType boardType, User user) {
+    public Board(String title, String content, BoardType boardType, User user) {
         this.title = title;
-        this.subTitle = subTitle;
         this.content = content;
         this.boardType = boardType;
         this.user = user;
     }
 
-    public Board update(String title, String subTitle, String content, BoardType boardType){
+    public Board update(String title, String content, BoardType boardType){
         this.title = title;
-        this.subTitle = subTitle;
         this.content = content;
         this.boardType = boardType;
         return this;

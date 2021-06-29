@@ -41,7 +41,6 @@ public class BoardService {
     public BoardResponseDto save(BoardRequestDto boardRequestDto, User user){
         Board board = Board.builder()
                 .title(boardRequestDto.getTitle())
-                .subTitle(boardRequestDto.getSubTitle())
                 .content(boardRequestDto.getContent())
                 .boardType(BoardType.valueOf(boardRequestDto.getBoardType()))
                 .user(user)
@@ -53,7 +52,6 @@ public class BoardService {
         Board board = boardRepository.findById(idx).get();
         board = board.update(
                 boardRequestDto.getTitle(),
-                boardRequestDto.getSubTitle(),
                 boardRequestDto.getContent(),
                 BoardType.valueOf(boardRequestDto.getBoardType()));
         boardRepository.flush();

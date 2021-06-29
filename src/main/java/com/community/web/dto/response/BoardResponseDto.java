@@ -12,18 +12,18 @@ import java.time.LocalDateTime;
 public class BoardResponseDto {
     private Long idx;
     private String title;
-    private String subTitle;
     private String content;
     private String boardType;
+    private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private UserDto user;
 
     public BoardResponseDto(Board board){
         this.idx = board.getIdx();
         this.title = board.getTitle();
-        this.subTitle = board.getSubTitle();
         this.content = board.getContent();
         this.boardType = board.getBoardType().getValue();
+        this.createdDate = board.getCreatedDate();
         this.updatedDate = board.getUpdatedDate();
         if(board.getUser()!=null)   this.user = new UserDto(board.getUser());
         else this.user = null;

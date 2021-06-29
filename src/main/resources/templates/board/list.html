@@ -32,9 +32,9 @@
                     <tr th:each="board : ${boardList}">
                         <td th:text="${board.idx}"></td>
                         <td th:text="${board.boardType}"></td>
-                        <td><a th:href="'/board?idx='+${board.idx}" th:text="${board.title}"></a></td>
+                        <td><a th:href="'/board?idx='+${board.idx}" th:text="${board.title}"></a><small class="code" th:if="${board.createdDate!=board.updatedDate}">(수정됨)</small> </td>
                         <td th:text="${board.user?.name}"></td>
-                        <td th:text="${#temporals.format(board.updatedDate,'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')}"></td>
                     </tr>
                 </tbody>
             </table>
