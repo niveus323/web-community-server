@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -15,12 +17,13 @@ public class Comment extends BaseEntity{
     @Column
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name="BOARD_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="BOARD_ID", updatable = false)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private Board board;
 
     @ManyToOne
-    @JoinColumn(name="USER_ID")
+    @JoinColumn(name="USER_ID", updatable = false)
     private User user;
 
     @Builder
