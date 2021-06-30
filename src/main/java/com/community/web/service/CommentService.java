@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,9 +22,8 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public Page<CommentResponseDto> findCommentList(Board board, Pageable pageable){
-        pageable = PageRequest.of(pageable.getPageNumber()<=0 ? 0 : pageable.getPageNumber()-1, pageable.getPageSize());
-        return commentRepository.findAllByBoard(board,pageable).map(CommentResponseDto::new);
+    public Page<CommentResponseDto> findCommentList(Long board_id, Long idx,Pageable pageable){
+        return commentRepository.findAllByBoardIdxAndIdxLessThanOrderByIdxDesc(board_id, idx,pageable).map(CommentResponseDto::new);
     }
 
     public CommentResponseDto save(CommentRequestDto commentRequestDto, Board board, User user){

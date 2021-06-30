@@ -64,16 +64,17 @@
             </h5>
         </div>
         <div class="comment-real-area">
+            <a href="#" th:if="!${commentList.last}" id="view-comment-prev-page-btn">이전 댓글 더보기</a>
             <div class="comment" th:each="comment : ${commentList}" th:id="'comment-'+${comment.idx}" th:data-id="${comment.idx}">
                 <div class="comment-header">
                     <div class="comment-writer" th:text="${comment.user.name}"></div>
-                    <small class="code" th:if="${comment.user.idx==board.user.idx}">(글쓴이) </small>
-                    <small class="code" th:if="${comment.createdDate!=comment.updatedDate}">(수정됨) </small>
+                    <small class="code equals-board-writer" th:if="${comment.user.idx==board.user.idx}">(글쓴이) </small>
+                    <small class="code comment-updated" th:if="${comment.createdDate!=comment.updatedDate}">(수정됨) </small>
                     <div class="comment-menu">
-                        <div th:if="${session.user?.idx == comment.user.idx}">
-                            <a th:href="'/board/comment_edit/'+${comment.idx}">수정</a>
+                        <div class="comment-update-delete" th:if="${session.user?.idx == comment.user.idx}">
+                            <a class="update-comment" th:href="'/board/comment_edit/'+${comment.idx}">수정</a>
                             <span class="middot">·</span>
-                            <a th:onclick="'deleteComment('+${comment.idx}+')'">삭제</a>
+                            <a class="delete-comment" th:onclick="'deleteComment('+${comment.idx}+')'">삭제</a>
                             <span class="middot">·</span>
                         </div>
                         <span class="time" th:title="${comment.createdDate}" th:text="${comment.createdDate}"></span>
@@ -128,6 +129,61 @@
             });
         }
     }
+</script>
+<script th:if="!${commentList.last}" th:inline="javascript">
+    $('#view-comment-prev-page-btn').click(function(e) {
+        e.preventDefault();
+        let lastcommentId = Number.MAX_SAFE_INTEGER;
+        $(".comment").each(function (){
+            let id = parseInt($(this).attr("data-id"));
+            if(id < lastcommentId) lastcommentId = id;
+        });
+        $.ajax({
+            url:"http://localhost:8080/api/comments/"+$("#board_idx").val()+"?lastCommentId="+lastcommentId,
+            type: "GET",
+            success: function(data){
+                console.log(data);
+                if($(data).attr("last")){
+                    $('#view-comment-prev-page-btn').hide();
+                }
+                for(const obj of $(data).attr("content")){
+                    let userIdx = $($(obj).attr("user")).attr("idx");
+                    let idx = $(obj).attr("idx");
+                    let tag = $('.comment').first().clone();
+                    tag.attr("id","comment-"+$(obj).attr("idx"));
+                    tag.attr("data-id",idx);
+                    tag.find(".comment-writer").text($($(obj).attr("user")).attr("name"));
+                    tag.find(".comment-updated").remove()
+                    if($(obj).attr("createdDate")!==$(obj).attr("updatedDate")){
+                        tag.find(".comment-writer").after("<small class=\"code comment-updated\">(수정됨) </small>");
+                    }
+                    tag.find(".equals-board-writer").remove()
+                    if(userIdx===/*[[${board.user.idx}]]*/""){
+                        tag.find(".comment-writer").after("<small class=\"code equals-board-writer\">(글쓴이) </small>");
+                    }
+                    tag.find(".comment-update-delete").remove();
+                    if(userIdx===/*[[${session.user?.idx}]]*/""){
+                        tag.find(".comment-menu").prepend(
+                            "<div class=\"comment-update-delete\"" +
+                            "<a class=\"update-comment\" href=\"'/board/comment_edit/'"+idx+"\">수정</a>" +
+                            "<span class=\"middot\">·</span>" +
+                            "<a class=\"delete-comment\" onclick=\"'deleteComment('"+idx+"')'\">삭제</a>" +
+                            "<span class=\"middot\">·</span>" +
+                            "</div>");
+                    }
+                    tag.find(".update-comment").attr("href","/board/comment_edit/"+idx);
+                    let time = tag.find(".time");
+                    time.attr("title",$(obj).attr("createdDate"));
+                    time.text($(obj).attr("createdDate"));
+                    tag.find(".comment-content").children("span").text($(obj).attr("content"));
+                    $(".comment-real-area").prepend(tag);
+                }
+            },
+            error : function (error){
+                alert(error);
+            }
+        })
+    });
 </script>
 <script>
     $('#comment-post').click(function(){

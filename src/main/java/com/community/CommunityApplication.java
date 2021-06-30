@@ -50,6 +50,11 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .password("test")
                     .email("havi@gmail.com")
                     .build());
+            User user2 = userRepository.save(User.builder()
+                    .name("이름2")
+                    .password("test2")
+                    .email("test@gmail.com")
+                    .build());
             IntStream.rangeClosed(1,200).forEach(index -> boardRepository.save(Board.builder()
                     .title("게시글"+index)
                     .content("콘텐츠")
@@ -57,7 +62,12 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .user(user)
                     .build()));
             Board board = boardRepository.findById(1L).get();
-            IntStream.rangeClosed(1,10).forEach(index -> commentRepository.save(Comment.builder()
+            IntStream.rangeClosed(1,8).forEach(index -> commentRepository.save(Comment.builder()
+                    .board(board)
+                    .user(user2)
+                    .content("댓글"+index)
+                    .build()));
+            IntStream.rangeClosed(9,15).forEach(index -> commentRepository.save(Comment.builder()
                     .board(board)
                     .user(user)
                     .content("댓글"+index)

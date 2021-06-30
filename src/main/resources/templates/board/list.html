@@ -32,7 +32,7 @@
                     <tr th:each="board : ${boardList}">
                         <td th:text="${board.idx}"></td>
                         <td th:text="${board.boardType}"></td>
-                        <td><a th:href="'/board?idx='+${board.idx}" th:text="${board.title}"></a><small class="code" th:if="${board.createdDate!=board.updatedDate}">(수정됨)</small> </td>
+                        <td><a th:href="'/board/'+${board.idx}" th:text="${board.title}"></a><small class="code" th:if="${board.createdDate!=board.updatedDate}">(수정됨)</small> </td>
                         <td th:text="${board.user?.name}"></td>
                         <td th:text="${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')}"></td>
                     </tr>
@@ -41,7 +41,7 @@
         </div>
         <!--- Pagination -->
         <nav aria-label="Page navigation" style="text-align: center;">
-            <ul class="pagination" th:with="startNumber=${T(Math).floor(boardList.number/10)}*10+1, endNumber=(${boardList.totalPages} > ${startNumber}+9) ? ${startNumber}+9 : ${boardList.totalPages}">
+            <ul class="pagination" th:with="startNumber=${T(Math).floor(boardList.number/10)}*10+1, endNumber=${(boardList.totalPages > startNumber+9) ? startNumber+9 : boardList.totalPages}">
                 <li><a href="/?page=1">&laquo;</a></li>
                 <li th:style="${boardList.first} ? 'display:none'">
                     <a th:href="@{/(page=${boardList.number})}">&lsaquo;</a>

@@ -71,3 +71,9 @@ small.code{
 .comment > .comment-header > span.middot{
     margin: 0 5px;
 }
+#view-comment-prev-page-btn{
+    display: block;
+    padding: 8px 0;
+    text-align: center;
+    width: 100%;
+}
