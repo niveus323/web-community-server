@@ -7,11 +7,10 @@ import com.community.web.dto.request.CommentRequestDto;
 import com.community.web.dto.response.CommentResponseDto;
 import com.community.web.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -23,7 +22,15 @@ public class CommentService {
     }
 
     public Page<CommentResponseDto> findCommentList(Long board_id, Long idx,Pageable pageable){
-        return commentRepository.findAllByBoardIdxAndIdxLessThanOrderByIdxDesc(board_id, idx,pageable).map(CommentResponseDto::new);
+        Page<Comment> commentPage = commentRepository.findAllByBoardIdxAndIdxLessThanOrderByIdxDesc(board_id, idx,pageable);
+        if(pageable.getSort().getOrderFor("idx").isAscending()){
+            return new PageImpl<>(
+                    commentPage.stream().sorted((x,y) -> (int) (x.getIdx() - y.getIdx())).map(CommentResponseDto::new).collect(Collectors.toList()),
+                    pageable,commentPage.getTotalElements()
+            );
+        }else{
+            return commentPage.map(CommentResponseDto::new);
+        }
     }
 
     public CommentResponseDto save(CommentRequestDto commentRequestDto, Board board, User user){

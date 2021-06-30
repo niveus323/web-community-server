@@ -7,9 +7,7 @@ import com.community.web.dto.response.CommentResponseDto;
 import com.community.web.service.BoardService;
 import com.community.web.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +28,7 @@ public class BoardController {
     }
 
     @GetMapping({"/board/{board_id}"})
-    public String board(@PathVariable(value="board_id") Long idx, Model model, @PageableDefault Pageable pageable){
+    public String board(@PathVariable(value="board_id") Long idx, Model model, @PageableDefault(sort = "idx") Pageable pageable){
         BoardResponseDto boardResponseDto = boardService.findBoardByIdx(idx);
         model.addAttribute("board", boardResponseDto);
         model.addAttribute("commentList",commentService.findCommentList(idx, Long.MAX_VALUE ,pageable));

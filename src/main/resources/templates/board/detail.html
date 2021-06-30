@@ -142,7 +142,6 @@
             url:"http://localhost:8080/api/comments/"+$("#board_idx").val()+"?lastCommentId="+lastcommentId,
             type: "GET",
             success: function(data){
-                console.log(data);
                 if($(data).attr("last")){
                     $('#view-comment-prev-page-btn').hide();
                 }
