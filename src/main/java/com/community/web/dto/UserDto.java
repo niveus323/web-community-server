@@ -15,10 +15,12 @@ public class UserDto implements Serializable {
     private Long idx;
     private String name;
     private String email;
+    private String userType;
 
     public UserDto(User user){
         this.idx = user.getIdx();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.userType = user.getUserType().getValue();
     }
 }

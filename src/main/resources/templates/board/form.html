@@ -21,7 +21,7 @@
                     <div class="pull-left">
                         <select class="form-control input-sm" id="board_type">
                             <option>-분류-</option>
-                            <option th:value="notice" th:selected="${board?.boardType == '공지사항'}">공지사항</option>
+                            <option th:if="${session.user?.userType=='관리자'}" th:value="notice" th:selected="${board?.boardType == '공지사항'}">공지사항</option>
                             <option th:value="free" th:selected="${board?.boardType == '자유게시판'}">자유게시판</option>
                         </select>
                     </div>

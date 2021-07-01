@@ -4,6 +4,7 @@ import com.community.web.domain.Board;
 import com.community.web.domain.Comment;
 import com.community.web.domain.enums.BoardType;
 import com.community.web.domain.User;
+import com.community.web.domain.enums.UserType;
 import com.community.web.repository.BoardRepository;
 import com.community.web.repository.CommentRepository;
 import com.community.web.repository.UserRepository;
@@ -49,6 +50,7 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .name("이름")
                     .password("test")
                     .email("havi@gmail.com")
+                    .userType(UserType.admin)
                     .build());
             User user2 = userRepository.save(User.builder()
                     .name("이름2")

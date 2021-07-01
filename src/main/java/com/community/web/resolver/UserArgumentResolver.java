@@ -3,6 +3,7 @@ package com.community.web.resolver;
 import com.community.web.annotation.SocialUser;
 import com.community.web.domain.User;
 import com.community.web.domain.enums.SocialType;
+import com.community.web.domain.enums.UserType;
 import com.community.web.dto.UserDto;
 import com.community.web.repository.UserRepository;
 import org.springframework.core.MethodParameter;
@@ -74,14 +75,14 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private User getModernUser(SocialType socialType, Map<String, Object> map){
         return User.builder().name(String.valueOf(map.get("name"))).email(String.valueOf(map.get("email"))).principal(String.valueOf(map.get("id")))
-                .socialType(socialType).build();
+                .userType(UserType.commonuser).socialType(socialType).build();
     }
 
     private User getKakaoUser(Map<String, Object> map){
         Map<String, String> propertyMap = (HashMap<String, String>) map.get("properties");
         Map<String, String> accountMap = (HashMap<String, String>) map.get("kakao_account");
         return User.builder().name(propertyMap.get("nickname")).email(String.valueOf(accountMap.get("email"))).principal(String.valueOf(map.get("id")))
-                .socialType(KAKAO).build();
+                .userType(UserType.commonuser).socialType(KAKAO).build();
     }
 
     private void setRoleIfNotSame(User user, OAuth2AuthenticationToken authentication, Map<String, Object> map){

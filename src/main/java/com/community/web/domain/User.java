@@ -1,6 +1,7 @@
 package com.community.web.domain;
 
 import com.community.web.domain.enums.SocialType;
+import com.community.web.domain.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -29,12 +30,16 @@ public class User extends BaseEntity implements Serializable {
     @Column
     private SocialType socialType;
 
+    @Column
+    private UserType userType;
+
     @Builder
-    public User(String name, String password, String email, String principal, SocialType socialType) {
+    public User(String name, String password, String email, String principal, SocialType socialType, UserType userType) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.principal = principal;
         this.socialType = socialType;
+        this.userType = userType;
     }
 }
