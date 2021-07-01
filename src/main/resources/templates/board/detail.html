@@ -65,26 +65,6 @@
         </div>
         <div class="comment-real-area">
             <a href="#" th:if="!${commentList.last}" id="view-comment-prev-page-btn">이전 댓글 더보기</a>
-            <div class="comment" th:each="comment : ${commentList}" th:id="'comment-'+${comment.idx}" th:data-id="${comment.idx}">
-                <div class="comment-header">
-                    <div class="comment-writer" th:text="${comment.user.name}"></div>
-                    <small class="code equals-board-writer" th:if="${comment.user.idx==board.user.idx}">(글쓴이) </small>
-                    <small class="code comment-updated" th:if="${comment.createdDate!=comment.updatedDate}">(수정됨) </small>
-                    <div class="comment-menu">
-                        <div class="comment-update-delete" th:if="${session.user?.idx == comment.user.idx}">
-                            <a class="update-comment" th:href="'/board/comment_edit/'+${comment.idx}">수정</a>
-                            <span class="middot">·</span>
-                            <a class="delete-comment" th:onclick="'deleteComment('+${comment.idx}+')'">삭제</a>
-                            <span class="middot">·</span>
-                        </div>
-                        <span class="time" th:title="${comment.createdDate}" th:text="${comment.createdDate}"></span>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="comment-content">
-                    <span th:text="${comment.content}"></span>
-                </div>
-            </div>
         </div>
         <div id="comment-write-form-area">
             <textarea name="content" id="comment-content" rows="4" class="form-control" placeholder="내용을 입력해주세요." style="height: 150px"></textarea>
@@ -142,40 +122,18 @@
             url:"http://localhost:8080/api/comments/"+$("#board_idx").val()+"?lastCommentId="+lastcommentId,
             type: "GET",
             success: function(data){
-                if($(data).attr("last")){
-                    $('#view-comment-prev-page-btn').hide();
+                for(const obj of data["content"]){
+                    let id = obj["idx"];
+                    let userName = obj["user"]["name"];
+                    let createdDate = obj["createdDate"];
+                    let updatedDate = obj["updatedDate"];
+                    let userIdx = obj["user"]["idx"];
+                    let content = obj["content"];
+                    makeCommentTag(id, userName, createdDate, updatedDate, userIdx, content);
                 }
-                for(const obj of $(data).attr("content")){
-                    let userIdx = $($(obj).attr("user")).attr("idx");
-                    let idx = $(obj).attr("idx");
-                    let tag = $('.comment').first().clone();
-                    tag.attr("id","comment-"+$(obj).attr("idx"));
-                    tag.attr("data-id",idx);
-                    tag.find(".comment-writer").text($($(obj).attr("user")).attr("name"));
-                    tag.find(".comment-updated").remove()
-                    if($(obj).attr("createdDate")!==$(obj).attr("updatedDate")){
-                        tag.find(".comment-writer").after("<small class=\"code comment-updated\">(수정됨) </small>");
-                    }
-                    tag.find(".equals-board-writer").remove()
-                    if(userIdx===/*[[${board.user.idx}]]*/""){
-                        tag.find(".comment-writer").after("<small class=\"code equals-board-writer\">(글쓴이) </small>");
-                    }
-                    tag.find(".comment-update-delete").remove();
-                    if(userIdx===/*[[${session.user?.idx}]]*/""){
-                        tag.find(".comment-menu").prepend(
-                            "<div class=\"comment-update-delete\"" +
-                            "<a class=\"update-comment\" href=\"'/board/comment_edit/'"+idx+"\">수정</a>" +
-                            "<span class=\"middot\">·</span>" +
-                            "<a class=\"delete-comment\" onclick=\"'deleteComment('"+idx+"')'\">삭제</a>" +
-                            "<span class=\"middot\">·</span>" +
-                            "</div>");
-                    }
-                    tag.find(".update-comment").attr("href","/board/comment_edit/"+idx);
-                    let time = tag.find(".time");
-                    time.attr("title",$(obj).attr("createdDate"));
-                    time.text($(obj).attr("createdDate"));
-                    tag.find(".comment-content").children("span").text($(obj).attr("content"));
-                    $(".comment-real-area").prepend(tag);
+                $(".comment-real-area").prepend($('#view-comment-prev-page-btn'));
+                if(data["last"]){
+                    $('#view-comment-prev-page-btn').hide();
                 }
             },
             error : function (error){
@@ -203,6 +161,28 @@
            }
        })
     });
+</script>
+<script th:inline="javascript">
+    for(const comment of /*[[${commentList.content}]]*/""){
+        makeCommentTag(comment["idx"],comment["user"]["name"],comment["createdDate"],comment["updatedDate"],comment["user"]["idx"],comment["content"]);
+    }
+
+    function makeCommentTag(idx, name, createdDate, updatedDate, userIdx, content){
+        let tag="<div class='comment' id='comment-"+idx+"' data-id='"+idx+"'><div class='comment-header'><div class='comment-writer'>"+name+"</div>";
+        if(userIdx===/*[[${board.user.idx}]]*/""){
+            tag+="<small class='code equals-board-writer'>(글쓴이) </small>";
+        }
+        if(createdDate!==updatedDate){
+            tag+="<small class='code comment-updated'>(수정됨) </small>";
+        }
+        tag+="<div class='comment-menu'>";
+        if(userIdx===/*[[${session.user?.idx}]]*/"") {
+            tag+="<div class='comment-update-delete'><a class='update-comment' href='/board/comment_edit/"+idx+"'>수정</a><span class='middot'>·</span><a class='delete-comment' onclick='deleteComment("+idx+")'>삭제</a><span class='middot'>·</span></div>"
+        }
+        tag+="<span class='time' title='"+createdDate+"'>"+createdDate+"</span></div><div class='clearfix'></div></div><div class='comment-content'><span>"+content+"</span></div>";
+        $('#view-comment-prev-page-btn').after(tag);
+
+    }
 </script>
 </body>
 </html>

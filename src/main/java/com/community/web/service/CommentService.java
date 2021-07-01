@@ -23,14 +23,7 @@ public class CommentService {
 
     public Page<CommentResponseDto> findCommentList(Long board_id, Long idx,Pageable pageable){
         Page<Comment> commentPage = commentRepository.findAllByBoardIdxAndIdxLessThanOrderByIdxDesc(board_id, idx,pageable);
-        if(pageable.getSort().getOrderFor("idx").isAscending()){
-            return new PageImpl<>(
-                    commentPage.stream().sorted((x,y) -> (int) (x.getIdx() - y.getIdx())).map(CommentResponseDto::new).collect(Collectors.toList()),
-                    pageable,commentPage.getTotalElements()
-            );
-        }else{
-            return commentPage.map(CommentResponseDto::new);
-        }
+        return commentPage.map(CommentResponseDto::new);
     }
 
     public CommentResponseDto save(CommentRequestDto commentRequestDto, Board board, User user){
