@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <title th:value="${board.content}"></title>
+    <title th:text="${board.title}"></title>
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
 </head>
@@ -64,7 +64,7 @@
             </h5>
         </div>
         <div class="comment-real-area">
-            <a href="#" th:if="!${commentList.last}" id="view-comment-prev-page-btn">이전 댓글 더보기</a>
+            <a href="#" th:style="'display: '+${commentList.last ? 'none': 'block'}" id="view-comment-prev-page-btn">이전 댓글 더보기</a>
         </div>
         <div id="comment-write-form-area">
             <textarea name="content" id="comment-content" rows="4" class="form-control" placeholder="내용을 입력해주세요." style="height: 150px"></textarea>
@@ -94,20 +94,25 @@
         });
     });
 </script>
-<script th:if="${commentList}">
-    function deleteComment(idx) {
-        if(confirm("댓글을 삭제하시겠습니까?")){
-            $.ajax({
-                url: "http://localhost:8080/api/comments/"+idx,
-                type: "DELETE",
-                success: function (){
-                    location.reload()
-                },
-                error : function (){
-                    alert('댓글 삭제 실패!');
-                }
-            });
+<script th:if="${commentList}" th:inline="javascript">
+    for(const comment of /*[[${commentList.content}]]*/""){
+        makeCommentTag(comment["idx"],comment["user"]["name"],comment["createdDate"],comment["updatedDate"],comment["user"]["idx"],comment["content"]);
+    }
+
+    function makeCommentTag(idx, name, createdDate, updatedDate, userIdx, content){
+        let tag="<div class='comment' id='comment-"+idx+"' data-id='"+idx+"'><div class='comment-header'><div class='comment-writer'>"+name+"</div>";
+        if(userIdx===/*[[${board.user.idx}]]*/""){
+            tag+="<small class='code equals-board-writer'>(글쓴이) </small>";
         }
+        if(createdDate!==updatedDate){
+            tag+="<small class='code comment-updated'>(수정됨) </small>";
+        }
+        tag+="<div class='comment-menu'>";
+        if(userIdx===/*[[${session.user?.idx}]]*/"") {
+            tag+="<div class='comment-update-delete'><a class='update-comment' href='/board/comment_edit/"+idx+"'>수정</a><span class='middot'>·</span><a class='delete-comment' href='#' data-id='"+idx+"'>삭제</a><span class='middot'>·</span></div>"
+        }
+        tag+="<span class='time' title='"+createdDate+"'>"+createdDate+"</span></div><div class='clearfix'></div></div><div class='comment-content'><span>"+content+"</span></div>";
+        $('#view-comment-prev-page-btn').after(tag);
     }
 </script>
 <script th:if="!${commentList.last}" th:inline="javascript">
@@ -133,7 +138,7 @@
                 }
                 $(".comment-real-area").prepend($('#view-comment-prev-page-btn'));
                 if(data["last"]){
-                    $('#view-comment-prev-page-btn').hide();
+                    $('#view-comment-prev-page-btn').attr('style',"display: none");
                 }
             },
             error : function (error){
@@ -161,28 +166,20 @@
            }
        })
     });
-</script>
-<script th:inline="javascript">
-    for(const comment of /*[[${commentList.content}]]*/""){
-        makeCommentTag(comment["idx"],comment["user"]["name"],comment["createdDate"],comment["updatedDate"],comment["user"]["idx"],comment["content"]);
-    }
-
-    function makeCommentTag(idx, name, createdDate, updatedDate, userIdx, content){
-        let tag="<div class='comment' id='comment-"+idx+"' data-id='"+idx+"'><div class='comment-header'><div class='comment-writer'>"+name+"</div>";
-        if(userIdx===/*[[${board.user.idx}]]*/""){
-            tag+="<small class='code equals-board-writer'>(글쓴이) </small>";
+    $('.delete-comment').click(function(){
+        if(confirm("댓글을 삭제하시겠습니까?")){
+            $.ajax({
+                url: "http://localhost:8080/api/comments/"+$(this).data("id"),
+                type: "DELETE",
+                success: function (){
+                    location.reload()
+                },
+                error : function (){
+                    alert('댓글 삭제 실패!');
+                }
+            });
         }
-        if(createdDate!==updatedDate){
-            tag+="<small class='code comment-updated'>(수정됨) </small>";
-        }
-        tag+="<div class='comment-menu'>";
-        if(userIdx===/*[[${session.user?.idx}]]*/"") {
-            tag+="<div class='comment-update-delete'><a class='update-comment' href='/board/comment_edit/"+idx+"'>수정</a><span class='middot'>·</span><a class='delete-comment' onclick='deleteComment("+idx+")'>삭제</a><span class='middot'>·</span></div>"
-        }
-        tag+="<span class='time' title='"+createdDate+"'>"+createdDate+"</span></div><div class='clearfix'></div></div><div class='comment-content'><span>"+content+"</span></div>";
-        $('#view-comment-prev-page-btn').after(tag);
-
-    }
+    });
 </script>
 </body>
 </html>
