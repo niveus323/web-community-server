@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    include: oauth
+  devtools:
+    restart:
+      enabled: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/dbdesign
+    username: dbuser
+    password: dbuser123!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    rest:
+      base-path: /api
+      default-page-size: 10
+      max-page-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: create
+    h2:
+      console:
+        enabled: false
+        path: /console
+    devtools:
+      livereload:
+        enabled: true
+    thymeleaf:
+      cache: false
+    show-sql: true

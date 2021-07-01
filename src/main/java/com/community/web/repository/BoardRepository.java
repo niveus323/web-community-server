@@ -11,5 +11,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource(excerptProjection = BoardOnlyContainTitle.class)
 public interface BoardRepository extends JpaRepository<Board, Long> {
     Board findByUser(User user);
-    Page<Board> findAllByUser(User user, Pageable pageable);
+    Page<Board> findAllByOrderByBoardTypeDescIdxDesc(Pageable pageable);
 }

@@ -55,6 +55,12 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .password("test2")
                     .email("test@gmail.com")
                     .build());
+            IntStream.rangeClosed(1,3).forEach(index -> boardRepository.save(Board.builder()
+                    .title("게시글"+index)
+                    .content("콘텐츠")
+                    .boardType(BoardType.notice)
+                    .user(user)
+                    .build()));
             IntStream.rangeClosed(1,200).forEach(index -> boardRepository.save(Board.builder()
                     .title("게시글"+index)
                     .content("콘텐츠")
