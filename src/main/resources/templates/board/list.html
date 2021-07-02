@@ -62,18 +62,18 @@
             </ul>
             <ul th:if="${keyword}" class="pagination" th:with="startNumber=${T(Math).floor(boardList.number/10)}*10+1, endNumber=${(boardList.totalPages > startNumber+9) ? startNumber+9 : boardList.totalPages}">
                 <li>
-                    <a th:href="'/?page=1&keyword'+${keyword}">&laquo;</a>
+                    <a th:href="'/?page=1&keyword='+${keyword}">&laquo;</a>
                 </li>
                 <li th:style="${boardList.first} ? 'display:none'">
-                    <a th:href="'/?page='+${boardList.number}+'&keyword='+ ${keyword}"></a>
+                    <a th:href="'/?page='+${boardList.number}+'&keyword='+ ${keyword}">&lsaquo;</a>
                 </li>
                 <li th:each="page :${#numbers.sequence(startNumber, endNumber)}" th:class="(${page} == ${boardList.number}+1)? 'active': ''">
-                    <a th:href="'/?page='+${page}+'&keyword'+${keyword}" th:text="${page}">
+                    <a th:href="'/?page='+${page}+'&keyword='+${keyword}" th:text="${page}">
                         <span class="sr-only"></span>
                     </a>
                 </li>
                 <li th:style="${boardList.last} ? 'display:none'">
-                    <a th:href="'/?page='+${boardList.number+2}+'&keyword='+${keyword}"></a>
+                    <a th:href="'/?page='+${boardList.number+2}+'&keyword='+${keyword}">&rsaquo;</a>
                 </li>
                 <li>
                     <a th:href="'/?page='+${boardList.totalPages}+'&keyword='+${keyword}">&raquo;</a>

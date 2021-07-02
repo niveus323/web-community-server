@@ -27,3 +27,6 @@ spring:
     thymeleaf:
       cache: false
     show-sql: true
+    properties:
+      hibernate:
+        use_sql_comments: true
