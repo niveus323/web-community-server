@@ -20,9 +20,14 @@ public class BoardService {
     }
 
     public Page<BoardResponseDto> findBoardList(Pageable pageable){
-        //pageable의 pageNumber가 0이하일때 0으로 초기화한 pageRequest 객체를 만들어 페이징 처리된 게시글 리스트를 반환한다. (기본 페이지 크기는 10)
         pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber()-1, pageable.getPageSize());
         return boardRepository.findAllByOrderByBoardTypeDescIdxDesc(pageable).map(BoardResponseDto::new);
+    }
+
+    public Page<BoardResponseDto> findBoardListWithKeyword(Pageable pageable, String keyword){
+        String regex = keyword.replaceAll(" ","|");
+        pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber()-1, pageable.getPageSize());
+        return boardRepository.findAllByTitleOrContentRegexOrderByIdxDesc(regex,pageable).map(BoardResponseDto::new);
     }
 
     public BoardResponseDto findBoardByIdx(Long idx){

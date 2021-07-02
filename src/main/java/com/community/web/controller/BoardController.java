@@ -35,11 +35,25 @@ public class BoardController {
         return "/board/detail";
     }
 
+//    @GetMapping("/")
+//    public String list(@PageableDefault Pageable pageable, Model model){
+//        model.addAttribute("boardList",boardService.findBoardList(pageable));
+//        return "/board/list";
+//    }
+
     @GetMapping("/")
-    public String list(@PageableDefault Pageable pageable, Model model){
-        model.addAttribute("boardList",boardService.findBoardList(pageable));
+    public String search(@RequestParam(required = false) Pageable pageable, @RequestParam(value = "keyword", required = false) String keyword,Model model){
+        System.out.println("pageable : "+pageable);
+        System.out.println("keyword : "+keyword);
+        if(keyword!=null){
+            model.addAttribute("boardList",boardService.findBoardListWithKeyword(pageable,keyword));
+            model.addAttribute("keyword",keyword);
+        }else{
+            model.addAttribute("boardList",boardService.findBoardList(pageable));
+        }
         return "/board/list";
     }
+
 
     @GetMapping("/board/write")
     public String write(@RequestParam(value="idx", required = false) Long idx, Model model, @SocialUser UserDto userDto){

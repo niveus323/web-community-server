@@ -41,8 +41,10 @@
         </div>
         <!--- Pagination -->
         <nav aria-label="Page navigation" style="text-align: center;">
-            <ul class="pagination" th:with="startNumber=${T(Math).floor(boardList.number/10)}*10+1, endNumber=${(boardList.totalPages > startNumber+9) ? startNumber+9 : boardList.totalPages}">
-                <li><a href="/?page=1">&laquo;</a></li>
+            <ul th:if="!${keyword}" class="pagination" th:with="startNumber=${T(Math).floor(boardList.number/10)}*10+1, endNumber=${(boardList.totalPages > startNumber+9) ? startNumber+9 : boardList.totalPages}">
+                <li>
+                    <a href="/?page=1">&laquo;</a>
+                </li>
                 <li th:style="${boardList.first} ? 'display:none'">
                     <a th:href="@{/(page=${boardList.number})}">&lsaquo;</a>
                 </li>
@@ -58,8 +60,35 @@
                     <a th:href="@{/(page=${boardList.totalPages})}">&raquo;</a>
                 </li>
             </ul>
+            <ul th:if="${keyword}" class="pagination" th:with="startNumber=${T(Math).floor(boardList.number/10)}*10+1, endNumber=${(boardList.totalPages > startNumber+9) ? startNumber+9 : boardList.totalPages}">
+                <li>
+                    <a th:href="'/?page=1&keyword'+${keyword}">&laquo;</a>
+                </li>
+                <li th:style="${boardList.first} ? 'display:none'">
+                    <a th:href="'/?page='+${boardList.number}+'&keyword='+ ${keyword}"></a>
+                </li>
+                <li th:each="page :${#numbers.sequence(startNumber, endNumber)}" th:class="(${page} == ${boardList.number}+1)? 'active': ''">
+                    <a th:href="'/?page='+${page}+'&keyword'+${keyword}" th:text="${page}">
+                        <span class="sr-only"></span>
+                    </a>
+                </li>
+                <li th:style="${boardList.last} ? 'display:none'">
+                    <a th:href="'/?page='+${boardList.number+2}+'&keyword='+${keyword}"></a>
+                </li>
+                <li>
+                    <a th:href="'/?page='+${boardList.totalPages}+'&keyword='+${keyword}">&raquo;</a>
+                </li>
+            </ul>
         </nav>
     </div>
+
+    <form class="input-group" method="get" action="/" id="boardSearchForm">
+<!--        <input type="hidden" name="search-type" value="titlecont">-->
+        <input type="text" name="keyword" class="form-control" placeholder="검색어">
+        <span class="input-group-btn">
+            <button class="btn square btn-default" type="submit">검색</button>
+        </span>
+    </form>
     <div th:replace="layout/footer::footer"></div>
 </body>
 </html>

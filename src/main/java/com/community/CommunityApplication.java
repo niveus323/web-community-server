@@ -56,6 +56,7 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .name("이름2")
                     .password("test2")
                     .email("test@gmail.com")
+                    .userType(UserType.commonuser)
                     .build());
             IntStream.rangeClosed(1,3).forEach(index -> boardRepository.save(Board.builder()
                     .title("게시글"+index)
@@ -67,7 +68,7 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .title("게시글"+index)
                     .content("콘텐츠")
                     .boardType(BoardType.free)
-                    .user(user)
+                    .user(user2)
                     .build()));
             Board board = boardRepository.findById(1L).get();
             IntStream.rangeClosed(1,8).forEach(index -> commentRepository.save(Comment.builder()
