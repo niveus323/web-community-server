@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 public class CommentResponseDto {
-    private Long idx;
-    private String content;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
-    private UserDto user;
+    private final Long idx;
+    private final String content;
+    private final LocalDateTime createdDate;
+    private final LocalDateTime updatedDate;
+    private final UserDto user;
 
     public CommentResponseDto(Comment comment){
         this.idx = comment.getIdx();

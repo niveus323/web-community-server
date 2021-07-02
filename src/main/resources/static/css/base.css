@@ -77,3 +77,11 @@ small.code{
     text-align: center;
     width: 100%;
 }
+#board-search-form{
+    width: 400px;
+    text-align: center;
+    margin: 1em auto 0;
+}
+#board-search-form .form-control{
+    height: 31px;
+}

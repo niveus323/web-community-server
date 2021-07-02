@@ -7,7 +7,6 @@ import com.community.web.dto.response.CommentResponseDto;
 import com.community.web.service.BoardService;
 import com.community.web.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -35,16 +34,8 @@ public class BoardController {
         model.addAttribute("commentList",commentService.findCommentList(idx, Long.MAX_VALUE ,pageable));
         return "/board/detail";
     }
-
-//    @GetMapping("/")
-//    public String list(@PageableDefault Pageable pageable, Model model){
-//        model.addAttribute("boardList",boardService.findBoardList(pageable));
-//        return "/board/list";
-//    }
-
     @GetMapping("/")
     public String search(@PageableDefault Pageable pageable, @RequestParam(value = "keyword", required = false) String keyword, Model model){
-        System.out.println("keyword : "+keyword);
         if(keyword!=null){
             model.addAttribute("boardList",boardService.findBoardListWithKeyword(pageable,keyword));
             model.addAttribute("keyword",keyword);

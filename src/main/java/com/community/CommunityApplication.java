@@ -4,6 +4,7 @@ import com.community.web.domain.Board;
 import com.community.web.domain.Comment;
 import com.community.web.domain.enums.BoardType;
 import com.community.web.domain.User;
+import com.community.web.domain.enums.SocialType;
 import com.community.web.domain.enums.UserType;
 import com.community.web.repository.BoardRepository;
 import com.community.web.repository.CommentRepository;
@@ -51,12 +52,16 @@ public class CommunityApplication implements WebMvcConfigurer {
                     .password("test")
                     .email("havi@gmail.com")
                     .userType(UserType.admin)
+                    .principal("textPrincipal")
+                    .socialType(SocialType.GOOGLE)
                     .build());
             User user2 = userRepository.save(User.builder()
                     .name("이름2")
                     .password("test2")
                     .email("test@gmail.com")
                     .userType(UserType.commonuser)
+                    .principal("textPrincipal")
+                    .socialType(SocialType.GOOGLE)
                     .build());
             IntStream.rangeClosed(1,3).forEach(index -> boardRepository.save(Board.builder()
                     .title("게시글"+index)

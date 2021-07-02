@@ -31,6 +31,7 @@ public class User extends BaseEntity implements Serializable {
     private SocialType socialType;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private UserType userType;
 
     @Builder
