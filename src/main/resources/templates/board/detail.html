@@ -66,6 +66,7 @@
         <div class="comment-real-area">
             <a href="#" th:style="'display: '+${commentList.last ? 'none': 'block'}" id="view-comment-prev-page-btn">이전 댓글 더보기</a>
         </div>
+        <a href="javascript:location.reload();" id="load-new-comments-btn" class="btn btn-sm btn-info invisible" style="margin: 0 15px"></a>
         <div id="comment-write-form-area">
             <textarea name="content" id="comment-content" rows="4" class="form-control" placeholder="내용을 입력해주세요." style="height: 150px"></textarea>
             <div id="comment-write-button-area">
@@ -77,6 +78,8 @@
 </div>
 <div th:replace="layout/footer::footer"></div>
 <script th:src="@{http://code.jquery.com/jquery-3.3.1.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script th:src="@{/js/stomp.min.js}"></script>
 <script th:if="${session.user?.idx == board.user.idx}">
     $('#update').click(function(){
         location.href = '/board/write?idx='+$('#board_idx').val();
@@ -148,12 +151,25 @@
     });
 </script>
 <script>
+    let boardId = $('#board_idx').val();
+    let newComments = 0;
+    let socket = new SockJS('/stomp');
+    let stompClient = Stomp.over(socket);
+    stompClient.debug=null;
+    stompClient.connect({},function(){
+        stompClient.subscribe('/board/'+boardId, function (){
+            $('#load-new-comments-btn').removeClass('invisible');
+            $('#load-new-comments-btn').text("새 댓글 "+(++newComments)+"개")
+        });
+    });
+
+
     $('#comment-post').click(function(){
         let jsonData = JSON.stringify({
             content : $('#comment-content').val()
         });
        $.ajax({
-           url: "http://localhost:8080/api/comments/"+$('#board_idx').val(),
+           url: "http://localhost:8080/api/comments/"+boardId,
            type: "POST",
            data: jsonData,
            contentType: "application/json",
@@ -181,5 +197,6 @@
         }
     });
 </script>
+
 </body>
 </html>

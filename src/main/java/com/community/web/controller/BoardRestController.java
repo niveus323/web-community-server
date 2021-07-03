@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -21,12 +22,14 @@ public class BoardRestController {
     private final BoardService boardService;
     private final CommentService commentService;
     private final UserService userService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public BoardRestController(BoardService boardService, CommentService commentService, UserService userService) {
+    public BoardRestController(BoardService boardService, CommentService commentService, UserService userService, SimpMessagingTemplate simpMessagingTemplate) {
         this.boardService = boardService;
         this.commentService = commentService;
         this.userService = userService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @PostMapping(value = "/boards", produces = "application/json; charset=utf8")
@@ -46,6 +49,7 @@ public class BoardRestController {
     public @ResponseBody
     ResponseEntity<?> saveComment(@PathVariable("board_id") Long idx, @RequestBody CommentRequestDto commentRequestDto, HttpSession session){
         UserDto userDto = (UserDto) session.getAttribute("user");
+        simpMessagingTemplate.convertAndSend("/board/"+idx,"");
         return ResponseEntity.ok(commentService.save(commentRequestDto, boardService.findEntityByIdx(idx),userService.toEntity(userDto)));
     }
 
