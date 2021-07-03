@@ -1,6 +1,5 @@
 package com.community.web.config;
 
-import com.community.web.domain.event.BoardEventHandler;
 import com.community.web.oauth.CustomOAuth2Provider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
@@ -23,9 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.community.web.domain.enums.SocialType.GOOGLE;
-import static com.community.web.domain.enums.SocialType.KAKAO;
-
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
@@ -36,8 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         http.oauth2Client();
         http.authorizeRequests()
-                .antMatchers("/google").hasAuthority(GOOGLE.getRoleType())
-                .antMatchers("/kakao").hasAuthority(KAKAO.getRoleType())
                 .antMatchers("/board/write","/board/comment_edit/**").authenticated()
                 .antMatchers(HttpMethod.POST , "/api/**").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
@@ -72,10 +66,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .build();
         }
         return null;
-    }
-
-    @Bean
-    BoardEventHandler boardEventHandler(){
-        return new BoardEventHandler();
     }
 }

@@ -68,7 +68,8 @@
         </div>
         <a href="javascript:location.reload();" id="load-new-comments-btn" class="btn btn-sm btn-info invisible" style="margin: 0 15px"></a>
         <div id="comment-write-form-area">
-            <textarea name="content" id="comment-content" rows="4" class="form-control" placeholder="내용을 입력해주세요." style="height: 150px"></textarea>
+            <textarea th:if="!${session.user}" name="content" id="comment-login" rows="4" class="form-control" placeholder="로그인이 필요합니다. 로그인하시겠습니까?" style="height: 150px"></textarea>
+            <textarea th:if="${session.user}" name="content" id="comment-content" rows="4" class="form-control" placeholder="내용을 입력해주세요." style="height: 150px"></textarea>
             <div id="comment-write-button-area">
                 <button class="btn btn-primary pull-right btn-sm" type="submit" id="comment-post"><span class="glyphicon glyphicon-pencil"></span>댓글쓰기</button>
                 <div class="clearfix"></div>
@@ -165,22 +166,30 @@
 
 
     $('#comment-post').click(function(){
+        if(!$('#comment-content').length){
+            alert("로그인이 필요합니다!");
+            return;
+        }
+        if(!$('#comment-content').val()){
+            alert("내용을 입력해주세요!");
+            return;
+        }
         let jsonData = JSON.stringify({
             content : $('#comment-content').val()
         });
-       $.ajax({
-           url: "http://localhost:8080/api/comments/"+boardId,
-           type: "POST",
-           data: jsonData,
-           contentType: "application/json",
-           dataType: "json",
-           success : function (){
-               location.reload();
-           },
-           error : function (){
-               alert('댓글 등록 실패!');
-           }
-       })
+        $.ajax({
+            url: "http://localhost:8080/api/comments/"+boardId,
+            type: "POST",
+            data: jsonData,
+            contentType: "application/json",
+            dataType: "json",
+            success : function (){
+                location.reload();
+            },
+            error : function (){
+                alert('댓글 등록 실패!');
+            }
+        });
     });
     $('.delete-comment').click(function(){
         if(confirm("댓글을 삭제하시겠습니까?")){
@@ -196,7 +205,11 @@
             });
         }
     });
+    $('#comment-login').click(function(){
+        if(confirm("로그인하시겠습니까?")){
+            location.href ="/login";
+        }
+    });
 </script>
-
 </body>
 </html>
