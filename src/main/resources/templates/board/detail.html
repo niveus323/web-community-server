@@ -25,22 +25,22 @@
         </tr>
         <tr>
             <th style="padding:13px 0 0 15px;">시간</th>
-            <td><span class="" th:text="${board?.updatedDate}"></span></td>
+            <td><span class="" th:text="${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')}"></span></td>
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;">제목</th>
-            <td><span id="board_title" class="" th:text="${board?.title}"></span><small class="code" th:if="${board?.createdDate!=board?.updatedDate}">(수정됨)</small></td>
+            <td><span id="board_title" class="" th:text="${board.title}"></span><small class="code" th:if="${board.createdDate!=board.updatedDate}">(수정됨)</small></td>
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;">작성자</th>
-            <td><span id="board_sub_title" class="" th:text="${board?.user?.name}"></span></td>
+            <td><span id="board_sub_title" class="" th:text="${board.user.name}"></span></td>
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;" th:colspan="2">내용</th>
         </tr>
         <tr>
             <td th:colspan="2">
-                <span id="board_content" class="" style="height: 200px;" th:text="${board?.content}"></span>
+                <span id="board_content" class="" style="height: 200px;" th:text="${board.content}"></span>
                 <span class="help-block"></span>
             </td>
         </tr>
