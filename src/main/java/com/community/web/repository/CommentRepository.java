@@ -11,5 +11,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = "user")
-    Page<Comment> findAllByBoardIdxAndIdxLessThanOrderByIdxDesc(Long board_id, Long idx, Pageable pageable);
+    Page<Comment> findAllByBoardIdxOrderByIdxDesc(Long board_id, Pageable pageable);
 }

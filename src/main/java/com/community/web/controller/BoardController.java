@@ -31,7 +31,7 @@ public class BoardController {
     public String board(@PathVariable(value="board_id") Long idx, Model model, @PageableDefault Pageable pageable){
         BoardResponseDto boardResponseDto = boardService.findBoardByIdx(idx);
         model.addAttribute("board", boardResponseDto);
-        model.addAttribute("commentList",commentService.findCommentList(idx, Long.MAX_VALUE ,pageable));
+        model.addAttribute("commentList",commentService.findCommentList(idx, pageable));
         return "/board/detail";
     }
     @GetMapping("/")

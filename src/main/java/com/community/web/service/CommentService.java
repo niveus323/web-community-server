@@ -21,8 +21,8 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public Page<CommentResponseDto> findCommentList(Long board_id, Long idx,Pageable pageable){
-        Page<Comment> commentPage = commentRepository.findAllByBoardIdxAndIdxLessThanOrderByIdxDesc(board_id, idx,pageable);
+    public Page<CommentResponseDto> findCommentList(Long board_id, Pageable pageable){
+        Page<Comment> commentPage = commentRepository.findAllByBoardIdxOrderByIdxDesc(board_id, pageable);
         return commentPage.map(CommentResponseDto::new);
     }
 

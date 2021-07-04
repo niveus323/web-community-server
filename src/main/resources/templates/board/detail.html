@@ -120,15 +120,11 @@
     }
 </script>
 <script th:if="!${commentList.last}" th:inline="javascript">
+    let page=0;
     $('#view-comment-prev-page-btn').click(function(e) {
         e.preventDefault();
-        let lastcommentId = Number.MAX_SAFE_INTEGER;
-        $(".comment").each(function (){
-            let id = parseInt($(this).attr("data-id"));
-            if(id < lastcommentId) lastcommentId = id;
-        });
         $.ajax({
-            url:"http://localhost:8080/api/comments/"+$("#board_idx").val()+"?lastCommentId="+lastcommentId,
+            url:"http://localhost:8080/api/comments/"+$("#board_idx").val()+"?page="+(++page),
             type: "GET",
             success: function(data){
                 for(const obj of data["content"]){

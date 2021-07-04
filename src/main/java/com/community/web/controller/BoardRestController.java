@@ -8,8 +8,10 @@ import com.community.web.service.CommentService;
 import com.community.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -54,7 +56,7 @@ public class BoardRestController {
     }
 
     @GetMapping(value="/comments/{board_id}")
-    public @ResponseBody ResponseEntity<?> getComment(@PathVariable("board_id") Long idx, @RequestParam Long lastCommentId){
-       return new ResponseEntity<>( commentService.findCommentList(idx, lastCommentId,PageRequest.of(0,10, Sort.Direction.DESC,"idx")), HttpStatus.OK);
+    public @ResponseBody ResponseEntity<?> getComment(@PathVariable("board_id") Long idx, @PageableDefault Pageable pageable){
+        return new ResponseEntity<>( commentService.findCommentList(idx, pageable), HttpStatus.OK);
     }
 }
