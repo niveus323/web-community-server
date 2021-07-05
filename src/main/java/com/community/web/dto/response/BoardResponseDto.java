@@ -15,6 +15,7 @@ public class BoardResponseDto {
     private final String title;
     private final String content;
     private final String boardType;
+    private final Long view;
     private final LocalDateTime createdDate;
     private final LocalDateTime updatedDate;
     private final UserDto user;
@@ -24,6 +25,7 @@ public class BoardResponseDto {
         this.title = board.getTitle();
         this.content = board.getContent();
         this.boardType = board.getBoardType().getValue();
+        this.view = board.getView();
         this.createdDate = board.getCreatedDate();
         this.updatedDate = board.getUpdatedDate();
         if(board.getUser()!=null)   this.user = new UserDto(board.getUser());
@@ -35,6 +37,7 @@ public class BoardResponseDto {
         this.title = boardWithUser.getTitle();
         this.content = boardWithUser.getContent();
         this.boardType = boardWithUser.getBoard_Type().getValue();
+        this.view = boardWithUser.getView();
         this.createdDate = boardWithUser.getCreated_Date();
         this.updatedDate = boardWithUser.getUpdated_Date();
         this.user = new UserDto(boardWithUser.getUserIdx(), boardWithUser.getUserName(), boardWithUser.getUserEmail(), boardWithUser.getUserType().getValue());

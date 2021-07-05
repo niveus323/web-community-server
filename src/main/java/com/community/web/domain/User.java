@@ -42,5 +42,7 @@ public class User extends BaseEntity implements Serializable {
         this.principal = principal;
         this.socialType = socialType;
         this.userType = userType;
+        this.setCreatedDateNow();
+        this.setUpdatedDateNow();
     }
 }

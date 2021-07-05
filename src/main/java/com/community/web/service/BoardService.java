@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
@@ -30,8 +32,10 @@ public class BoardService {
         return boardRepository.findAllByTitleOrContentRegexOrderByIdxDesc(regex,pageable).map(BoardResponseDto::new);
     }
 
+    @Transactional
     public BoardResponseDto findBoardByIdx(Long idx){
-        return new BoardResponseDto(boardRepository.findById(idx).orElse(null));
+        Board board = boardRepository.findById(idx).orElse(null);
+        return new BoardResponseDto(board.updateView());
     }
 
     public Board findEntityByIdx(Long idx) { return boardRepository.findById(idx).get(); }
@@ -46,13 +50,13 @@ public class BoardService {
         return new BoardResponseDto(boardRepository.save(board));
     }
 
+    @Transactional
     public BoardResponseDto update(Long idx,BoardRequestDto boardRequestDto){
         Board board = boardRepository.findById(idx).get();
         board = board.update(
                 boardRequestDto.getTitle(),
                 boardRequestDto.getContent(),
                 BoardType.valueOf(boardRequestDto.getBoardType()));
-        boardRepository.flush();
         return new BoardResponseDto(board);
     }
 }

@@ -30,5 +30,7 @@ public class Comment extends BaseEntity{
         this.board = board;
         this.content = content;
         this.user = user;
+        this.setCreatedDateNow();
+        this.setUpdatedDateNow();
     }
 }

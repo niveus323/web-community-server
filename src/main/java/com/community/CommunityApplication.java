@@ -15,16 +15,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.IntStream;
 
-@EnableJpaAuditing
 @SpringBootApplication
 public class CommunityApplication implements WebMvcConfigurer {
 

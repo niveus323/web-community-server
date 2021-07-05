@@ -21,6 +21,9 @@ public class Board extends BaseEntity{
     private String content;
 
     @Column
+    private Long view;
+
+    @Column
     @Enumerated(EnumType.STRING)
     private BoardType boardType;
 
@@ -33,12 +36,21 @@ public class Board extends BaseEntity{
         this.content = content;
         this.boardType = boardType;
         this.user = user;
+        this.view = 0L;
+        this.setCreatedDateNow();
+        this.setUpdatedDateNow();
     }
 
     public Board update(String title, String content, BoardType boardType){
         this.title = title;
         this.content = content;
         this.boardType = boardType;
+        this.setUpdatedDateNow();
+        return this;
+    }
+
+    public Board updateView(){
+        this.view++;
         return this;
     }
 }

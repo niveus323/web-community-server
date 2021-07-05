@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,7 @@ public class CommentService {
         return commentPage.map(CommentResponseDto::new);
     }
 
+    @Transactional
     public CommentResponseDto save(CommentRequestDto commentRequestDto, Board board, User user){
         return new CommentResponseDto(commentRepository.save(Comment.builder()
                 .content(commentRequestDto.getContent())

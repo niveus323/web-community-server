@@ -16,4 +16,5 @@ public interface BoardWithUser {
     String getUserEmail();
     String getUserName();
     UserType getUserType();
+    Long getView();
 }
