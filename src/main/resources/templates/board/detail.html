@@ -14,7 +14,7 @@
     </div>
     <br/>
     <input id="board_idx" type="hidden" th:value="${board.idx}"/>
-    <table class="table">
+    <table class="table" style="margin-bottom: 0">
         <tr>
             <th style="padding: 13px 0 0 15px">게시판 종류</th>
             <td>
@@ -29,23 +29,28 @@
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;">제목</th>
-            <td><span id="board_title" class="" th:text="${board.title}"></span><small class="code" th:if="${board.createdDate!=board.updatedDate}">(수정됨)</small></td>
+            <td><span id="board-title" class="" th:text="${board.title}"></span><small class="code" th:if="${board.createdDate!=board.updatedDate}">(수정됨)</small></td>
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;">작성자</th>
-            <td><span id="board_sub_title" class="" th:text="${board.user.name}"></span></td>
+            <td><span id="board-sub-title" class="" th:text="${board.user.name}"></span></td>
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;">조회수</th>
-            <td><span id="board_view" class="" th:text="${board.view}"></span></td>
+            <td><span id="board-view" class="" th:text="${board.view}"></span></td>
         </tr>
         <tr>
             <th style="padding: 13px 0 0 15px;" th:colspan="2">내용</th>
         </tr>
         <tr>
             <td th:colspan="2">
-                <span id="board_content" class="" style="height: 200px;" th:text="${board.content}"></span>
+                <span id="board-content" class="" style="height: 200px;" th:text="${board.content}"></span>
                 <span class="help-block"></span>
+                <div class="vote-area">
+                    <button type="button" th:data-id="${board.idx}" class="btn btn-primary" th:classappend="${#lists.contains(board.votedBy, session.user?.idx)? '' : 'vote-btn'}">
+                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> 추천 <span id="vote-count" th:text="${board.votedBy.size()}"></span>
+                    </button>
+                </div>
             </td>
         </tr>
         <tr>
@@ -154,17 +159,24 @@
 <script>
     let boardId = $('#board_idx').val();
     let newComments = 0;
+    let voteCount = parseInt($("#vote-count").text());
     let socket = new SockJS('/stomp');
     let stompClient = Stomp.over(socket);
     stompClient.debug=null;
     stompClient.connect({},function(){
-        stompClient.subscribe('/board/'+boardId, function (){
-            $('#load-new-comments-btn').removeClass('invisible');
-            $('#load-new-comments-btn').text("새 댓글 "+(++newComments)+"개")
+        stompClient.subscribe('/board/'+boardId, function (data){
+            switch(data["body"]){
+                case "newVotes" :
+                    $("#vote-count").text(++voteCount);
+                    break;
+                case "newComment" :
+                    $('#load-new-comments-btn').removeClass('invisible');
+                    $('#load-new-comments-btn').text("새 댓글 "+(++newComments)+"개")
+                    break;
+            }
+
         });
     });
-
-
     $('#comment-post').click(function(){
         if(!$('#comment-content').length){
             alert("로그인이 필요합니다!");
@@ -209,6 +221,19 @@
         if(confirm("로그인하시겠습니까?")){
             location.href ="/login";
         }
+    });
+    $('.vote-btn').click(function(){
+        let el = $(this);
+        $.ajax({
+            url: "http://localhost:8080/api/boards/up/"+$(this).data("id"),
+            type: "GET",
+            success: function(){
+                el.removeClass("vote-btn").unbind('click');
+            },
+            error: function(){
+                alert("로그인이 필요합니다!");
+            }
+        });
     });
 </script>
 </body>

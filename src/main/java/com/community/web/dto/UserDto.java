@@ -1,5 +1,6 @@
 package com.community.web.dto;
 
+import com.community.web.domain.BaseEntity;
 import com.community.web.domain.User;
 import com.community.web.domain.enums.SocialType;
 import com.community.web.domain.projection.BoardWithUser;
@@ -8,6 +9,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ToString
 @Getter

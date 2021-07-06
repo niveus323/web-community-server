@@ -1,5 +1,6 @@
 package com.community.web.controller;
 
+import com.community.web.domain.User;
 import com.community.web.dto.UserDto;
 import com.community.web.dto.request.BoardRequestDto;
 import com.community.web.dto.request.CommentRequestDto;
@@ -47,11 +48,23 @@ public class BoardRestController {
         return ResponseEntity.ok(boardService.update(idx, boardRequestDto));
     }
 
+    @GetMapping(value="/boards/up/{board_id}")
+    public @ResponseBody
+    ResponseEntity<?> likeBoard(@PathVariable("board_id") Long idx, HttpSession session){
+        boolean result = false;
+        UserDto userDto = (UserDto) session.getAttribute("user");
+        if(userDto!=null){
+            result = boardService.addVote(idx,userService.toEntity(userDto));
+            simpMessagingTemplate.convertAndSend("/board/"+idx,"newVotes");
+        }
+        return result ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     @PostMapping(value="/comments/{board_id}", produces = "application/json; charset=utf8")
     public @ResponseBody
     ResponseEntity<?> saveComment(@PathVariable("board_id") Long idx, @RequestBody CommentRequestDto commentRequestDto, HttpSession session){
         UserDto userDto = (UserDto) session.getAttribute("user");
-        simpMessagingTemplate.convertAndSend("/board/"+idx,"");
+        simpMessagingTemplate.convertAndSend("/board/"+idx,"newComment");
         return ResponseEntity.ok(commentService.save(commentRequestDto, boardService.findEntityByIdx(idx),userService.toEntity(userDto)));
     }
 

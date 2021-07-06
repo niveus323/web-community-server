@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Service
 public class BoardService {
@@ -27,7 +29,7 @@ public class BoardService {
     }
 
     public Page<BoardResponseDto> findBoardListWithKeyword(Pageable pageable, String keyword){
-        String regex = keyword.replaceAll(" ","|");
+        String regex = Arrays.stream(keyword.split(" ")).map(x -> String.format("(?=.*%s)",x)).collect(Collectors.joining(""));
         pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber()-1, pageable.getPageSize());
         return boardRepository.findAllByTitleOrContentRegexOrderByIdxDesc(regex,pageable).map(BoardResponseDto::new);
     }
@@ -58,5 +60,11 @@ public class BoardService {
                 boardRequestDto.getContent(),
                 BoardType.valueOf(boardRequestDto.getBoardType()));
         return new BoardResponseDto(board);
+    }
+
+    @Transactional
+    public boolean addVote(Long idx, User user){
+        Board board = findEntityByIdx(idx).addVoter(user);
+        return true;
     }
 }
