@@ -1,11 +1,9 @@
 package com.community.web.domain.projection;
 
-import com.community.web.domain.User;
 import com.community.web.domain.enums.BoardType;
 import com.community.web.domain.enums.UserType;
-
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public interface BoardWithUser {
     Long getIdx();
@@ -19,5 +17,5 @@ public interface BoardWithUser {
     String getUserName();
     UserType getUserType();
     Long getView();
-    List<User> getVotedBy();
+    Set<Long> getVotedBy();
 }

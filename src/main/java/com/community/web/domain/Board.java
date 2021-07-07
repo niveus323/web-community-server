@@ -5,10 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 import javax.persistence.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @ToString
 @Getter
@@ -29,12 +27,12 @@ public class Board extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private BoardType boardType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="votes", joinColumns = @JoinColumn(name="board_idx"), inverseJoinColumns = @JoinColumn(name="user_idx"))
-    List<User> votedBy;
+    Set<User> votedBy;
 
     @Builder
     public Board(String title, String content, BoardType boardType, User user) {
@@ -43,26 +41,13 @@ public class Board extends BaseEntity{
         this.boardType = boardType;
         this.user = user;
         this.view = 0L;
-        this.votedBy = new LinkedList<>();
+        this.votedBy = new HashSet<>();
         this.setCreatedDateNow();
         this.setUpdatedDateNow();
     }
 
-    public Board update(String title, String content, BoardType boardType){
-        this.title = title;
-        this.content = content;
-        this.boardType = boardType;
-        this.setUpdatedDateNow();
-        return this;
-    }
-
     public Board updateView(){
         this.view++;
-        return this;
-    }
-
-    public Board addVoter(User user){
-        this.votedBy.add(user);
         return this;
     }
 }

@@ -3,6 +3,7 @@ package com.community.web.service;
 import com.community.web.domain.Board;
 import com.community.web.domain.User;
 import com.community.web.domain.enums.BoardType;
+import com.community.web.domain.projection.BoardWithUser;
 import com.community.web.dto.request.BoardRequestDto;
 import com.community.web.dto.response.BoardResponseDto;
 import com.community.web.repository.BoardRepository;
@@ -25,18 +26,18 @@ public class BoardService {
 
     public Page<BoardResponseDto> findBoardList(Pageable pageable){
         pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber()-1, pageable.getPageSize());
-        return boardRepository.findAllByOrderByBoardTypeDescIdxDesc(pageable).map(BoardResponseDto::new);
+        return boardRepository.findAllByOrderByBoardTypeDescIdxDesc(pageable, BoardWithUser.class).map(BoardResponseDto::new);
     }
 
     public Page<BoardResponseDto> findBoardListWithKeyword(Pageable pageable, String keyword){
         String regex = Arrays.stream(keyword.split(" ")).map(x -> String.format("(?=.*%s)",x)).collect(Collectors.joining(""));
         pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber()-1, pageable.getPageSize());
-        return boardRepository.findAllByTitleOrContentRegexOrderByIdxDesc(regex,pageable).map(BoardResponseDto::new);
+        return boardRepository.findAllByTitleOrContentRegexOrderByIdxDesc(regex,pageable, BoardWithUser.class).map(BoardResponseDto::new);
     }
 
     @Transactional
     public BoardResponseDto findBoardByIdx(Long idx){
-        Board board = boardRepository.findById(idx).orElse(null);
+        Board board = boardRepository.findById(idx).get();
         return new BoardResponseDto(board.updateView());
     }
 
@@ -53,18 +54,12 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponseDto update(Long idx,BoardRequestDto boardRequestDto){
-        Board board = boardRepository.findById(idx).get();
-        board = board.update(
-                boardRequestDto.getTitle(),
-                boardRequestDto.getContent(),
-                BoardType.valueOf(boardRequestDto.getBoardType()));
-        return new BoardResponseDto(board);
+    public boolean update(Long idx,BoardRequestDto boardRequestDto){
+        return boardRepository.updateBoardById(idx, boardRequestDto.getTitle(), boardRequestDto.getContent(), BoardType.valueOf(boardRequestDto.getBoardType())) > 0;
     }
 
     @Transactional
     public boolean addVote(Long idx, User user){
-        Board board = findEntityByIdx(idx).addVoter(user);
-        return true;
+        return boardRepository.voteBoardById(user.getIdx(), idx) > 0;
     }
 }

@@ -16,12 +16,12 @@ public class Comment extends BaseEntity{
     @Column
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="BOARD_ID", updatable = false)
     @OnDelete(action= OnDeleteAction.CASCADE)
     private Board board;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name="USER_ID", updatable = false)
     private User user;
 

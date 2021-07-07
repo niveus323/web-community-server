@@ -1,6 +1,5 @@
 package com.community.web.controller;
 
-import com.community.web.domain.User;
 import com.community.web.dto.UserDto;
 import com.community.web.dto.request.BoardRequestDto;
 import com.community.web.dto.request.CommentRequestDto;
@@ -8,9 +7,7 @@ import com.community.web.service.BoardService;
 import com.community.web.service.CommentService;
 import com.community.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -45,7 +42,7 @@ public class BoardRestController {
     @PutMapping(value="/boards/{board_id}", produces = "application/json; charset=utf8")
     public @ResponseBody
     ResponseEntity<?> updateBoard(@PathVariable("board_id") Long idx, @RequestBody BoardRequestDto boardRequestDto){
-        return ResponseEntity.ok(boardService.update(idx, boardRequestDto));
+        return boardService.update(idx, boardRequestDto) ? new ResponseEntity<>("success",HttpStatus.OK) : new ResponseEntity<>("error",HttpStatus.BAD_REQUEST) ;
     }
 
     @GetMapping(value="/boards/up/{board_id}")
@@ -55,9 +52,11 @@ public class BoardRestController {
         UserDto userDto = (UserDto) session.getAttribute("user");
         if(userDto!=null){
             result = boardService.addVote(idx,userService.toEntity(userDto));
-            simpMessagingTemplate.convertAndSend("/board/"+idx,"newVotes");
         }
-        return result ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(result){
+            simpMessagingTemplate.convertAndSend("/board/"+idx,"newVotes");
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else   return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value="/comments/{board_id}", produces = "application/json; charset=utf8")

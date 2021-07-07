@@ -7,8 +7,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true, of={"email"})
 @NoArgsConstructor
@@ -38,7 +37,7 @@ public class User extends BaseEntity implements Serializable {
 
     @ManyToMany
     @JoinTable(name="votes", joinColumns = @JoinColumn(name="user_idx"), inverseJoinColumns = @JoinColumn(name="board_idx"))
-    private List<Board> votes;
+    private Set<Board> votes;
 
     @Builder
     public User(String name, String password, String email, String principal, SocialType socialType, UserType userType) {
@@ -48,7 +47,7 @@ public class User extends BaseEntity implements Serializable {
         this.principal = principal;
         this.socialType = socialType;
         this.userType = userType;
-        this.votes = new LinkedList<>();
+        this.votes = new HashSet<>();
         this.setCreatedDateNow();
         this.setUpdatedDateNow();
     }
