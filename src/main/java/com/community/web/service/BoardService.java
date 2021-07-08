@@ -41,7 +41,9 @@ public class BoardService {
         return new BoardResponseDto(board.updateView());
     }
 
-    public Board findEntityByIdx(Long idx) { return boardRepository.findById(idx).get(); }
+    public Board findEntityByIdx(Long idx) {
+        return boardRepository.findById(idx).get();
+    }
 
     public BoardResponseDto save(BoardRequestDto boardRequestDto, User user){
         Board board = Board.builder()
@@ -59,7 +61,7 @@ public class BoardService {
     }
 
     @Transactional
-    public boolean addVote(Long idx, User user){
-        return boardRepository.voteBoardById(user.getIdx(), idx) > 0;
+    public boolean addVote(Long idx, Long userIdx){
+        return boardRepository.voteBoardById(userIdx, idx) > 0;
     }
 }

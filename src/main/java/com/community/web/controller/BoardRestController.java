@@ -51,7 +51,7 @@ public class BoardRestController {
         boolean result = false;
         UserDto userDto = (UserDto) session.getAttribute("user");
         if(userDto!=null){
-            result = boardService.addVote(idx,userService.toEntity(userDto));
+            result = boardService.addVote(idx,userDto.getIdx());
         }
         if(result){
             simpMessagingTemplate.convertAndSend("/board/"+idx,"newVotes");
