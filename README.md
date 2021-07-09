@@ -19,3 +19,7 @@ SpringBoot 게시판 미니프로젝트
 - 게시글 검색 기능
 - Security, Login API를 활용한 접근 제어
 - WebSocket을 활용한 댓글 추가, 게시물 추천 시 알림
+
+
+### 3. 프로젝트 정리 및 회고
+링크 : https://haeng-on.tistory.com/50
